@@ -21,16 +21,37 @@ class UpdatePemesananRequest extends FormRequest
      */
     public function rules(): array
     {
+        $pemesananId = $this->route('pemesanan')->id ?? null;
+
         return [
             'nama_pemesan' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|max:255',
+            'email' => 'sometimes|required|email|max:255|unique:pemesanans,email,' . $pemesananId,
             'telepon' => 'sometimes|required|string|max:20',
             'alamat' => 'sometimes|required|string',
             'tanggal_pemesanan' => 'sometimes|required|date',
             'jenis_layanan' => 'sometimes|required|string|max:255',
-            'deskripsi' => 'sometimes|required|string',
+            'deskripsi' => 'sometimes|required|string|min:10',
             'harga' => 'sometimes|required|numeric|min:0',
             'status' => 'sometimes|in:pending,confirmed,completed,cancelled',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nama_pemesan.required' => 'Nama pemesan wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan.',
+            'telepon.required' => 'Nomor telepon wajib diisi.',
+            'alamat.required' => 'Alamat wajib diisi.',
+            'tanggal_pemesanan.required' => 'Tanggal pemesanan wajib diisi.',
+            'jenis_layanan.required' => 'Jenis layanan wajib dipilih.',
+            'deskripsi.required' => 'Deskripsi wajib diisi.',
+            'deskripsi.min' => 'Deskripsi minimal 10 karakter.',
+            'harga.required' => 'Harga wajib diisi.',
+            'harga.numeric' => 'Harga harus berupa angka.',
+            'harga.min' => 'Harga tidak boleh negatif.',
         ];
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Alat extends Model
 {
-    protected $fillable = ['nama_alat', 'stok', 'kategori_id'];
+    protected $fillable = ['nama_alat', 'stok', 'kategori_id', 'kondisi', 'status_fungsi', 'kualitas', 'layak', 'deskripsi'];
 
     public function kategori(): BelongsTo
     {

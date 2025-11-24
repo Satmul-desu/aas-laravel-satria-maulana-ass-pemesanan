@@ -22,7 +22,7 @@ class KategoriAlatController extends Controller
      */
     public function create()
     {
-        //
+        return view('kategori-alats.create');
     }
 
     /**
@@ -76,9 +76,9 @@ class KategoriAlatController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(KategoriAlat $kategoriAlat)
     {
-        //
+        return view('kategori-alats.edit', compact('kategoriAlat'));
     }
 
     /**

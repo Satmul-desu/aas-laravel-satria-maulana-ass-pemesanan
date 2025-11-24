@@ -41,10 +41,10 @@
                                     <div class="info-section">
                                         <h5><i class="fas fa-map-marker-alt text-secondary me-2"></i>Lokasi & Kontak</h5>
                                         <div class="info-content">
-                                            <p><strong>Alamat:</strong> Gedung Teknik, Lantai 3<br>Universitas Smulz<br>Jl. Teknologi No. 123</p>
+                                            <p><strong>Alamat:</strong> CD2,NO 69<br>prumahan regency<br>Jl. seketi sektor 7</p>
                                             <p><strong>Telepon:</strong> (021) 1234-5678</p>
                                             <p><strong>Email:</strong> info@smulzlab.com</p>
-                                            <p><strong>WhatsApp:</strong> +62 812-3456-7890</p>
+                                            <p><strong>WhatsApp:</strong> +62 821-2993-9458</p>
                                         </div>
                                     </div>
 
@@ -131,10 +131,10 @@
                                         </h5>
                                         <p class="mb-3">Untuk pertanyaan yang tidak tercover di sini, hubungi kami langsung.</p>
                                         <div class="contact-options">
-                                            <a href="mailto:support@smulzlab.com" class="btn btn-outline-secondary w-100 mb-2">
+                                            <a href="mailto:satmul.mul1@gmail.com" class="btn btn-outline-secondary w-100 mb-2">
                                                 <i class="fas fa-envelope me-2"></i>Email Support
                                             </a>
-                                            <a href="https://wa.me/6281234567890" class="btn btn-success w-100">
+                                            <a href="https://wa.me/6282129939458" class="btn btn-success w-100">
                                                 <i class="fab fa-whatsapp me-2"></i>WhatsApp Admin
                                             </a>
                                         </div>

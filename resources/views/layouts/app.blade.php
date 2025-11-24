@@ -102,8 +102,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('peminjamen.*') ? 'active' : '' }}" href="{{ route('peminjamen.index') }}">
-                            <i class="fas fa-hand-holding"></i> Peminjaman
+                        <a class="nav-link {{ request()->routeIs('pelanggans.*') ? 'active' : '' }}" href="{{ route('pelanggans.index') }}">
+                            <i class="fas fa-users"></i> Pelanggan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('pemesanans.*') ? 'active' : '' }}" href="{{ route('pemesanans.index') }}">
+                            <i class="fas fa-hand-holding"></i> Pemesanan
                         </a>
                     </li>
                     <li class="nav-item">
@@ -181,7 +186,7 @@
 
     @yield('scripts')
 
-    <!-- Toast Notification -->
+    <!-- Toast Notifications -->
     @if(session('success'))
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">

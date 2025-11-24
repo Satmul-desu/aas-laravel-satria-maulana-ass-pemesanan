@@ -27,8 +27,8 @@
         <div class="card">
             <div class="card-body text-center">
                 <i class="fas fa-hand-holding fa-3x text-warning mb-3"></i>
-                <h4>{{ $totalPeminjaman }}</h4>
-                <p class="text-muted mb-0">Total Peminjaman</p>
+                <h4>{{ $totalPemesanan }}</h4>
+                <p class="text-muted mb-0">Total Pemesanan</p>
             </div>
         </div>
     </div>
@@ -36,8 +36,17 @@
         <div class="card">
             <div class="card-body text-center">
                 <i class="fas fa-calendar-month fa-3x text-info mb-3"></i>
-                <h4>{{ $peminjamanBulanIni }}</h4>
-                <p class="text-muted mb-0">Peminjaman Bulan Ini</p>
+                <h4>{{ $pemesananBulanIni }}</h4>
+                <p class="text-muted mb-0">Pemesanan Bulan Ini</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-clock fa-3x text-danger mb-3"></i>
+                <h4>Rp {{ number_format($totalKerugian, 0, ',', '.') }}</h4>
+                <p class="text-muted mb-0">Total Kerugian (Denda)</p>
             </div>
         </div>
     </div>
@@ -48,54 +57,50 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-chart-line"></i> Statistik Peminjaman Per Bulan</h5>
+                <h5><i class="fas fa-chart-line"></i> Statistik Pemesanan Per Bulan</h5>
             </div>
             <div class="card-body">
-                <canvas id="peminjamanChart" width="400" height="200"></canvas>
+                <canvas id="pemesananChart" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Recent Peminjaman -->
+<!-- Recent Pemesanan -->
 <div class="row mt-4">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-clock"></i> Peminjaman Terbaru</h5>
+                <h5><i class="fas fa-clock"></i> Pemesanan Terbaru</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Kode Pinjam</th>
+                                <th>Kode Pesan</th>
                                 <th>User</th>
-                                <th>Tanggal Pinjam</th>
-                                <th>Tanggal Kembali</th>
+                                <th>Tanggal Pesan</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse(\App\Models\Peminjaman::with('user')->latest()->take(5)->get() as $peminjaman)
+                            @forelse(\App\Models\Pemesanan::with('user')->latest()->take(5)->get() as $pemesanan)
                             <tr>
-                                <td>{{ $peminjaman->kode_pinjam }}</td>
-                                <td>{{ $peminjaman->user->name }}</td>
-                                <td>{{ $peminjaman->tanggal_pinjam->format('d/m/Y') }}</td>
-                                <td>{{ $peminjaman->tanggal_kembali->format('d/m/Y') }}</td>
+                                <td>{{ $pemesanan->kode_pesan }}</td>
+                                <td>{{ $pemesanan->user->name }}</td>
+                                <td>{{ $pemesanan->tanggal_pesan->format('d/m/Y') }}</td>
                                 <td>
-                                    @if($peminjaman->tanggal_kembali < now())
-                                        <span class="badge bg-danger">Terlambat</span>
-                                    @elseif($peminjaman->tanggal_pinjam <= now() && $peminjaman->tanggal_kembali >= now())
-                                        <span class="badge bg-warning">Sedang Dipinjam</span>
+                                    @if($pemesanan->is_done)
+                                        <span class="badge bg-success">Done</span>
                                     @else
-                                        <span class="badge bg-success">Selesai</span>
+                                        <span class="badge bg-warning">No</span>
                                     @endif
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center">Belum ada data peminjaman</td>
+                                <td colspan="4" class="text-center">Belum ada data pemesanan</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -109,27 +114,27 @@
 
 @section('scripts')
 <script>
-    // Chart.js untuk statistik peminjaman
-    const ctx = document.getElementById('peminjamanChart').getContext('2d');
-    const peminjamanChart = new Chart(ctx, {
+    // Chart.js untuk statistik pemesanan
+    const ctx = document.getElementById('pemesananChart').getContext('2d');
+    const pemesananChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [{
-                label: 'Peminjaman',
+                label: 'Pemesanan',
                 data: [
-                    {{ $peminjamanPerBulan[1] ?? 0 }},
-                    {{ $peminjamanPerBulan[2] ?? 0 }},
-                    {{ $peminjamanPerBulan[3] ?? 0 }},
-                    {{ $peminjamanPerBulan[4] ?? 0 }},
-                    {{ $peminjamanPerBulan[5] ?? 0 }},
-                    {{ $peminjamanPerBulan[6] ?? 0 }},
-                    {{ $peminjamanPerBulan[7] ?? 0 }},
-                    {{ $peminjamanPerBulan[8] ?? 0 }},
-                    {{ $peminjamanPerBulan[9] ?? 0 }},
-                    {{ $peminjamanPerBulan[10] ?? 0 }},
-                    {{ $peminjamanPerBulan[11] ?? 0 }},
-                    {{ $peminjamanPerBulan[12] ?? 0 }}
+                    {{ $pemesananPerBulan[1] ?? 0 }},
+                    {{ $pemesananPerBulan[2] ?? 0 }},
+                    {{ $pemesananPerBulan[3] ?? 0 }},
+                    {{ $pemesananPerBulan[4] ?? 0 }},
+                    {{ $pemesananPerBulan[5] ?? 0 }},
+                    {{ $pemesananPerBulan[6] ?? 0 }},
+                    {{ $pemesananPerBulan[7] ?? 0 }},
+                    {{ $pemesananPerBulan[8] ?? 0 }},
+                    {{ $pemesananPerBulan[9] ?? 0 }},
+                    {{ $pemesananPerBulan[10] ?? 0 }},
+                    {{ $pemesananPerBulan[11] ?? 0 }},
+                    {{ $pemesananPerBulan[12] ?? 0 }}
                 ],
                 borderColor: 'rgb(102, 126, 234)',
                 backgroundColor: 'rgba(102, 126, 234, 0.1)',
@@ -145,7 +150,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Peminjaman Alat Laboratorium Per Bulan'
+                    text: 'Pemesanan Alat Laboratorium Per Bulan'
                 }
             },
             scales: {

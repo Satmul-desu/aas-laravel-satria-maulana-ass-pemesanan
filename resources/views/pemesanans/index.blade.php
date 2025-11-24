@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Pemesanan Alat')
+@section('title', 'Kelola Pemesanan')
 
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-gradient-success text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><i class="fas fa-shopping-cart"></i> Kelola Pemesanan Alat</h4>
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="fas fa-shopping-cart"></i> Kelola Pemesanan</h4>
                     <div>
                         <a href="{{ route('pemesanans.export.pdf') }}" class="btn btn-danger btn-sm me-2" target="_blank">
                             <i class="fas fa-file-pdf"></i> Export PDF
@@ -30,8 +30,10 @@
                         <div class="col-md-6">
                             <select id="statusFilter" class="form-select">
                                 <option value="">Semua Status</option>
-                                <option value="aktif">Aktif</option>
-                                <option value="selesai">Selesai</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
                     </div>
@@ -42,10 +44,10 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>No</th>
-                                    <th>Kode Pesan</th>
-                                    <th>User</th>
-                                    <th>Tanggal Pesan</th>
-                                    <th>Alat Dipesan</th>
+                                    <th>Kode Transaksi</th>
+                                    <th>Nama Pemesan</th>
+                                    <th>Jenis Layanan</th>
+                                    <th>Tanggal Pemesanan</th>
                                     <th>Total</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
@@ -56,23 +58,21 @@
                                 <tr>
                                     <td>{{ $pemesanans->firstItem() + $index }}</td>
                                     <td>
-                                        <span class="badge bg-info">{{ $pemesanan->kode_pesan ?? '-' }}</span>
+                                        <span class="badge bg-info">{{ $pemesanan->kode_transaksi }}</span>
                                     </td>
-                                    <td>{{ $pemesanan->user->name }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($pemesanan->tanggal_pesan)->format('d/m/Y') }}</td>
+                                    <td>{{ $pemesanan->nama_pemesan }}</td>
+                                    <td>{{ $pemesanan->jenis_layanan }}</td>
+                                    <td>{{ $pemesanan->tanggal_pemesanan->format('d/m/Y') }}</td>
+                                    <td>Rp {{ number_format($pemesanan->total, 0, ',', '.') }}</td>
                                     <td>
-                                        @foreach($pemesanan->details as $detail)
-                                            <small class="d-block">{{ $detail->alat->nama_alat }} ({{ $detail->jumlah }})</small>
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        <strong>Rp {{ number_format($pemesanan->total, 0, ',', '.') }}</strong>
-                                    </td>
-                                    <td>
-                                        @if($pemesanan->is_done ?? false)
-                                            <span class="badge bg-success">Selesai</span>
+                                        @if($pemesanan->status == 'pending')
+                                            <span class="badge bg-warning">Pending</span>
+                                        @elseif($pemesanan->status == 'confirmed')
+                                            <span class="badge bg-info">Confirmed</span>
+                                        @elseif($pemesanan->status == 'completed')
+                                            <span class="badge bg-success">Completed</span>
                                         @else
-                                            <span class="badge bg-secondary">Aktif</span>
+                                            <span class="badge bg-danger">Cancelled</span>
                                         @endif
                                     </td>
                                     <td>
@@ -82,7 +82,7 @@
                                         <a href="{{ route('pemesanans.edit', $pemesanan->id) }}" class="btn btn-sm btn-outline-primary me-1">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deletePemesanan({{ $pemesanan->id }}, '{{ $pemesanan->kode_pesan ?? '-' }}')">
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deletePemesanan({{ $pemesanan->id }}, '{{ $pemesanan->kode_transaksi }}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -137,7 +137,7 @@ $(document).ready(function() {
 function deletePemesanan(id, kode) {
     Swal.fire({
         title: 'Apakah Anda yakin?',
-        text: `Hapus pemesanan "${kode}"? Stok alat akan dikembalikan.`,
+        text: `Hapus pemesanan "${kode}"?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',

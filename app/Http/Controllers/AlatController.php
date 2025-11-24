@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Alat;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
 class AlatController extends Controller
 {
@@ -23,22 +22,29 @@ class AlatController extends Controller
      */
     public function create()
     {
-        //
+        $kategoris = \App\Models\KategoriAlat::all();
+        return view('alats.create', compact('kategoris'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $request->validate([
             'nama_alat' => 'required|string|max:255',
             'stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_alats,id',
+            'kondisi' => 'required|in:baru,bekas',
+            'status_fungsi' => 'required|in:berfungsi,tidak_berfungsi',
+            'kualitas' => 'required|in:baik,buruk',
+            'layak' => 'required|in:layak,tidak_layak',
+            'deskripsi' => 'nullable|string|max:1000',
         ]);
 
-        $alat = Alat::create($request->all());
-        return response()->json($alat->load('kategori'), 201);
+        Alat::create($request->all());
+
+        return redirect()->route('alats.index')->with('success', 'Alat berhasil dibuat!');
     }
 
     /**
@@ -72,32 +78,40 @@ class AlatController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Alat $alat)
     {
-        //
+        $kategoris = \App\Models\KategoriAlat::all();
+        return view('alats.edit', compact('alat', 'kategoris'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Alat $alat): JsonResponse
+    public function update(Request $request, Alat $alat)
     {
         $request->validate([
             'nama_alat' => 'required|string|max:255',
             'stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_alats,id',
+            'kondisi' => 'required|in:baru,bekas',
+            'status_fungsi' => 'required|in:berfungsi,tidak_berfungsi',
+            'kualitas' => 'required|in:baik,buruk',
+            'layak' => 'required|in:layak,tidak_layak',
+            'deskripsi' => 'nullable|string|max:1000',
         ]);
 
         $alat->update($request->all());
-        return response()->json($alat->load('kategori'));
+
+        return redirect()->route('alats.index')->with('success', 'Alat berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Alat $alat): JsonResponse
+    public function destroy(Alat $alat)
     {
         $alat->delete();
-        return response()->json(['message' => 'Alat deleted successfully']);
+
+        return redirect()->route('alats.index')->with('success', 'Alat berhasil dihapus!');
     }
 }

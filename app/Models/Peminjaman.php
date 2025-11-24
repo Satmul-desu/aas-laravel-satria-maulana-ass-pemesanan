@@ -9,16 +9,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Peminjaman extends Model
 {
-    protected $fillable = ['kode_pinjam', 'tanggal_pinjam', 'tanggal_kembali', 'user_id'];
+    protected $fillable = ['kode_pinjam', 'tanggal_pinjam', 'tanggal_kembali', 'tanggal_dikembalikan', 'total', 'is_done', 'late_fee', 'user_id'];
 
     protected $casts = [
         'tanggal_pinjam' => 'date',
         'tanggal_kembali' => 'date',
+        'tanggal_dikembalikan' => 'date',
+        'total' => 'decimal:2',
+        'is_done' => 'boolean',
+        'late_fee' => 'decimal:2',
+        'damage_fee' => 'decimal:2',
+        'lost_fee' => 'decimal:2',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function pelanggan(): BelongsTo
+    {
+        return $this->belongsTo(Pelanggan::class);
     }
 
     public function details(): HasMany

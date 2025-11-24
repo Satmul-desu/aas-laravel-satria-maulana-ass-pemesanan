@@ -23,8 +23,8 @@
                                     <div class="icon-wrapper mb-3">
                                         <i class="fas fa-shopping-cart fa-3x text-primary"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold">Cara Pemesanan</h5>
-                                    <p class="card-text text-muted">Panduan lengkap cara memesan alat laboratorium</p>
+                                    <h5 class="card-title fw-bold">Cara Peminjaman</h5>
+                                    <p class="card-text text-muted">Panduan lengkap cara meminjam alat laboratorium</p>
                                     <a href="{{ route('customer-service.cara-pemesanan') }}" class="btn btn-primary btn-lg rounded-pill w-100">
                                         <i class="fas fa-arrow-right me-2"></i>Lihat Solusi
                                     </a>
@@ -40,7 +40,7 @@
                                         <i class="fas fa-credit-card fa-3x text-success"></i>
                                     </div>
                                     <h5 class="card-title fw-bold">Masalah Pembayaran</h5>
-                                    <p class="card-text text-muted">Solusi untuk masalah pembayaran dan transaksi</p>
+                                    <p class="card-text text-muted">Solusi untuk masalah pembayaran dan transaksi saat dikenakan denda</p>
                                     <a href="{{ route('customer-service.masalah-pembayaran') }}" class="btn btn-success btn-lg rounded-pill w-100">
                                         <i class="fas fa-arrow-right me-2"></i>Lihat Solusi
                                     </a>

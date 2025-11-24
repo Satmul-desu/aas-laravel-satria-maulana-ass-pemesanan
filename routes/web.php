@@ -4,7 +4,7 @@ use App\Http\Controllers\AlatController;
 use App\Http\Controllers\CustomerServiceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriAlatController;
-use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PemesananController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +13,8 @@ Route::get('/', function () {
 });
 
 Route::resource('pemesanans', PemesananController::class);
+Route::get('pemesanans-export-pdf', [PemesananController::class, 'exportPdf'])->name('pemesanans.export.pdf');
+Route::get('pemesanans-export-excel', [PemesananController::class, 'exportExcel'])->name('pemesanans.export.excel');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -24,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer-service/lainnya', [CustomerServiceController::class, 'lainnya'])->name('customer-service.lainnya');
     Route::resource('kategori-alats', KategoriAlatController::class);
     Route::resource('alats', AlatController::class);
-    Route::resource('peminjamen', PeminjamanController::class);
+    Route::resource('pelanggans', PelangganController::class);
 });
 
 Auth::routes();

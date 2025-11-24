@@ -68,6 +68,59 @@
                                     <span class="badge bg-info fs-6">{{ $totalPeminjaman }}</span>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Kondisi:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge {{ $alat->kondisi == 'baru' ? 'bg-success' : 'bg-secondary' }} fs-6">
+                                        {{ ucfirst($alat->kondisi ?? 'N/A') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Status Fungsi:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge {{ $alat->status_fungsi == 'berfungsi' ? 'bg-success' : 'bg-danger' }} fs-6">
+                                        {{ ucfirst(str_replace('_', ' ', $alat->status_fungsi ?? 'N/A')) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Kualitas:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge {{ $alat->kualitas == 'baik' ? 'bg-success' : 'bg-warning' }} fs-6">
+                                        {{ ucfirst($alat->kualitas ?? 'N/A') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Layak Pakai:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge {{ $alat->layak == 'layak' ? 'bg-success' : 'bg-danger' }} fs-6">
+                                        {{ ucfirst(str_replace('_', ' ', $alat->layak ?? 'N/A')) }}
+                                    </span>
+                                </div>
+                            </div>
+                            @if($alat->deskripsi)
+                            <hr>
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>Deskripsi:</strong>
+                                    <p class="mt-2">{{ $alat->deskripsi }}</p>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
 
