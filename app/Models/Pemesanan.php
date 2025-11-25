@@ -3,22 +3,38 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pemesanan extends Model
 {
     protected $fillable = [
         'kode_transaksi',
-        'nama_pemesan',
-        'email',
-        'telepon',
+        'pelanggan_id',
         'alamat',
-        'tanggal_pemesanan',
         'jenis_layanan',
         'deskripsi',
         'harga',
         'total',
         'status',
     ];
+
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class);
+    }
+    
+    public function pemesananDetails(): HasMany
+    {
+        return $this->hasMany(PemesananDetail::class);
+    }
+
+    public function alat(): BelongsToMany
+    {
+        return $this->belongsToMany(Alat::class, 'pemesanan_details', 'pemesanan_id', 'alat_id')
+                    ->withPivot('jumlah', 'harga_satuan')
+                    ->withTimestamps();
+    }
 
     protected $casts = [
         'tanggal_pemesanan' => 'date',
@@ -65,5 +81,25 @@ class Pemesanan extends Model
         // Jika ada detail transaksi di masa depan, hitung dari detail
         // Untuk sekarang, return harga sebagai total
         return $this->harga;
+    }
+
+    public function getNamaPemesanAttribute()
+    {
+        return $this->pelanggan ? $this->pelanggan->nama : '';
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->pelanggan ? $this->pelanggan->email : '';
+    }
+
+    public function getTeleponAttribute()
+    {
+        return $this->pelanggan ? $this->pelanggan->telepon : '';
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
     }
 }

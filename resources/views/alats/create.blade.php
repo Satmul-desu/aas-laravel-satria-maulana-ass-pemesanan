@@ -102,6 +102,18 @@
                                                     </label>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="number" class="form-control @error('harga') is-invalid @enderror"
+                                                           id="harga" name="harga" value="{{ old('harga', 0) }}" min="0" step="0.01" required>
+                                                    <label for="harga">
+                                                        <i class="fas fa-dollar-sign me-1"></i>Harga <span class="text-danger">*</span>
+                                                    </label>
+                                                    @error('harga')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

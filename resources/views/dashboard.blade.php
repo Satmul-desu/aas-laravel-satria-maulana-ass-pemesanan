@@ -50,6 +50,15 @@
             </div>
         </div>
     </div>
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
+                <h4>Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</h4>
+                <p class="text-muted mb-0">Total Pemasukan</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -89,7 +98,7 @@
                             <tr>
                                 <td>{{ $pemesanan->kode_pesan }}</td>
                                 <td>{{ $pemesanan->user->name }}</td>
-                                <td>{{ $pemesanan->tanggal_pesan->format('d/m/Y') }}</td>
+                                <td>{{ $pemesanan->tanggal_pesan ? $pemesanan->tanggal_pesan->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     @if($pemesanan->is_done)
                                         <span class="badge bg-success">Done</span>

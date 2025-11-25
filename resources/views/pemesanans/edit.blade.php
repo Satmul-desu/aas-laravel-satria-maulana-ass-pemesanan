@@ -9,10 +9,7 @@
             <div class="card shadow-lg border-0 rounded-lg">
                 <div class="card-header bg-gradient-warning text-white py-4">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="mb-1"><i class="fas fa-edit me-2"></i>Edit Pemesanan</h3>
-                            <p class="mb-0 opacity-75">Kode: {{ $pemesanan->kode_transaksi }}</p>
-                        </div>
+                        <h3 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Pemesanan</h3>
                         <a href="{{ route('pemesanans.show', $pemesanan->id) }}" class="btn btn-light btn-lg shadow-sm">
                             <i class="fas fa-arrow-left me-2"></i>Kembali
                         </a>
@@ -20,159 +17,180 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form id="editForm" method="POST" action="{{ route('pemesanans.update', $pemesanan->id) }}" novalidate>
+                    <form method="POST" action="{{ route('pemesanans.update', $pemesanan->id) }}" novalidate>
                         @csrf
                         @method('PUT')
 
-                        <!-- Informasi Dasar -->
                         <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="card border-warning shadow-sm">
-                                    <div class="card-header bg-warning bg-opacity-10 border-warning">
-                                        <h5 class="mb-0 text-warning">
-                                            <i class="fas fa-info-circle me-2"></i>Informasi Dasar Pemesanan
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <input type="text" name="nama_pemesan" id="nama_pemesan"
-                                                           class="form-control" value="{{ $pemesanan->nama_pemesan }}" required>
-                                                    <label for="nama_pemesan">
-                                                        <i class="fas fa-user me-1"></i>Nama Pemesan <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <input type="email" name="email" id="email"
-                                                           class="form-control" value="{{ $pemesanan->email }}" required>
-                                                    <label for="email">
-                                                        <i class="fas fa-envelope me-1"></i>Email <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <input type="tel" name="telepon" id="telepon"
-                                                           class="form-control" value="{{ $pemesanan->telepon }}" required>
-                                                    <label for="telepon">
-                                                        <i class="fas fa-phone me-1"></i>Telepon <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <input type="date" name="tanggal_pemesanan" id="tanggal_pemesanan"
-                                                           class="form-control" value="{{ $pemesanan->tanggal_pemesanan->format('Y-m-d') }}" required>
-                                                    <label for="tanggal_pemesanan">
-                                                        <i class="fas fa-calendar-plus me-1"></i>Tanggal Pemesanan <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-floating mb-3">
-                                                    <textarea name="alamat" id="alamat" class="form-control"
-                                                              style="height: 80px;" required>{{ $pemesanan->alamat }}</textarea>
-                                                    <label for="alamat">
-                                                        <i class="fas fa-map-marker-alt me-1"></i>Alamat <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <label for="pelanggan_id" class="form-label">Pelanggan <span class="text-danger">*</span></label>
+                                <select id="pelanggan_id" name="pelanggan_id" class="form-select @error('pelanggan_id') is-invalid @enderror" required>
+                                    <option value="">Pilih Pelanggan</option>
+                                    @foreach($pelanggans as $pelanggan)
+                                        <option value="{{ $pelanggan->id }}" {{ (old('pelanggan_id') ?? $pemesanan->pelanggan_id) == $pelanggan->id ? 'selected' : '' }}>
+                                            {{ $pelanggan->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('pelanggan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tanggal_pemesanan" class="form-label">Tanggal Pemesanan <span class="text-danger">*</span></label>
+                                <input type="date" id="tanggal_pemesanan" name="tanggal_pemesanan" class="form-control @error('tanggal_pemesanan') is-invalid @enderror" value="{{ old('tanggal_pemesanan', $pemesanan->tanggal_pemesanan->format('Y-m-d')) }}" required>
+                                @error('tanggal_pemesanan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
-                        <!-- Detail Pemesanan -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="card border-success shadow-sm">
-                                    <div class="card-header bg-success bg-opacity-10 border-success">
-                                        <h5 class="mb-0 text-success">
-                                            <i class="fas fa-shopping-cart me-2"></i>Detail Pemesanan
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <select name="jenis_layanan" id="jenis_layanan" class="form-select" required>
-                                                        <option value="">Pilih Jenis Layanan</option>
-                                                        <option value="Konsultasi" {{ $pemesanan->jenis_layanan == 'Konsultasi' ? 'selected' : '' }}>Konsultasi</option>
-                                                        <option value="Service Alat" {{ $pemesanan->jenis_layanan == 'Service Alat' ? 'selected' : '' }}>Service Alat</option>
-                                                        <option value="Kalibrasi" {{ $pemesanan->jenis_layanan == 'Kalibrasi' ? 'selected' : '' }}>Kalibrasi</option>
-                                                        <option value="Pelatihan" {{ $pemesanan->jenis_layanan == 'Pelatihan' ? 'selected' : '' }}>Pelatihan</option>
-                                                        <option value="Lainnya" {{ $pemesanan->jenis_layanan == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                                                    </select>
-                                                    <label for="jenis_layanan">
-                                                        <i class="fas fa-cogs me-1"></i>Jenis Layanan <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <input type="number" name="harga" id="harga"
-                                                           class="form-control" value="{{ $pemesanan->harga }}" min="0" step="0.01" required>
-                                                    <label for="harga">
-                                                        <i class="fas fa-money-bill-wave me-1"></i>Harga (Rp) <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-floating mb-3">
-                                                    <textarea name="deskripsi" id="deskripsi" class="form-control"
-                                                              style="height: 100px;" required>{{ $pemesanan->deskripsi }}</textarea>
-                                                    <label for="deskripsi">
-                                                        <i class="fas fa-sticky-note me-1"></i>Deskripsi <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <select name="status" id="status" class="form-select" required>
-                                                        <option value="pending" {{ $pemesanan->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                        <option value="confirmed" {{ $pemesanan->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                                        <option value="completed" {{ $pemesanan->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                                                        <option value="cancelled" {{ $pemesanan->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                                    </select>
-                                                    <label for="status">
-                                                        <i class="fas fa-flag me-1"></i>Status <span class="text-danger">*</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="mb-4">
+                            <label for="alamat" class="form-label">Alamat <span class="text-danger">*</span></label>
+                            <textarea id="alamat" name="alamat" class="form-control @error('alamat') is-invalid @enderror" rows="3" required>{{ old('alamat', $pemesanan->alamat) }}</textarea>
+                            @error('alamat')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-end gap-3">
-                                    <button type="reset" class="btn btn-outline-secondary btn-lg px-4">
-                                        <i class="fas fa-undo me-2"></i>Reset
-                                    </button>
-                                    <button type="submit" class="btn btn-warning btn-lg px-5">
-                                        <i class="fas fa-save me-2"></i>Update Pemesanan
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="mb-4">
+                            <label for="jenis_layanan" class="form-label">Jenis Layanan <span class="text-danger">*</span></label>
+                            <select id="jenis_layanan" name="jenis_layanan" class="form-select @error('jenis_layanan') is-invalid @enderror" required>
+                                <option value="">Pilih Jenis Layanan</option>
+                                <option value="reguler" {{ (old('jenis_layanan', $pemesanan->jenis_layanan) == 'reguler') ? 'selected' : '' }}>Reguler</option>
+                                <option value="expres" {{ (old('jenis_layanan', $pemesanan->jenis_layanan) == 'expres') ? 'selected' : '' }}>Expres</option>
+                                <option value="premium" {{ (old('jenis_layanan', $pemesanan->jenis_layanan) == 'premium') ? 'selected' : '' }}>Premium</option>
+                                <option value="vip" {{ (old('jenis_layanan', $pemesanan->jenis_layanan) == 'vip') ? 'selected' : '' }}>VIP</option>
+                                <option value="vvip" {{ (old('jenis_layanan', $pemesanan->jenis_layanan) == 'vvip') ? 'selected' : '' }}>VVIP</option>
+                            </select>
+                            @error('jenis_layanan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="harga" class="form-label">Harga (Rp) <span class="text-danger">*</span></label>
+                            <input type="number" id="harga" name="harga" class="form-control @error('harga') is-invalid @enderror" min="0" step="0.01" value="{{ old('harga', $pemesanan->harga) }}" readonly required>
+                            @error('harga')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Pilih Alat dan Jumlah</label>
+                            <table class="table table-bordered" id="alat-table">
+                                <thead>
+                                    <tr>
+                                        <th>Alat</th>
+                                        <th>Harga Satuan (Rp)</th>
+                                        <th>Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(\App\Models\Alat::all() as $alat)
+                                    @php
+                                        $pemesananDetail = $pemesanan->alat->firstWhere('id', $alat->id);
+                                        $jumlahSelected = $pemesananDetail ? $pemesananDetail->pivot->jumlah : 0;
+                                        $checked = $jumlahSelected > 0 ? 'checked' : '';
+                                        $jumlahValue = old('jumlah.' . $loop->index, $jumlahSelected);
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="alat-checkbox" id="alat_{{ $alat->id }}" name="alat_id[]" value="{{ $alat->id }}" {{ $checked }}>
+                                            <label for="alat_{{ $alat->id }}">{{ $alat->nama_alat }}</label>
+                                        </td>
+                                        <td class="harga-satuan" data-harga="{{ $alat->harga }}">{{ number_format($alat->harga, 2, ',', '.') }}</td>
+                                        <td>
+                                            <input type="number" name="jumlah[]" class="form-control jumlah-input" min="1" value="{{ $jumlahValue }}" {{ $checked ? '' : 'disabled' }} placeholder="Masukkan jumlah alat yang dipesan">
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <small class="text-muted">Jumlah alat yang dipesan, bukan jumlah stok</small>
+                            @error('alat_id')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                            @error('jumlah')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const checkboxes = document.querySelectorAll('.alat-checkbox');
+                                const jumlahInputs = document.querySelectorAll('.jumlah-input');
+                                const hargaInput = document.getElementById('harga');
+
+                                function calculateTotal() {
+                                    let total = 0;
+                                    checkboxes.forEach((checkbox, index) => {
+                                        if (checkbox.checked) {
+                                            const hargaSatuan = parseFloat(checkbox.closest('tr').querySelector('.harga-satuan').dataset.harga);
+                                            const jumlahInput = jumlahInputs[index];
+                                            let jumlah = parseInt(jumlahInput.value) || 0;
+
+                                            if (jumlah < 1) {
+                                                jumlahInput.value = 1;
+                                                jumlah = 1;
+                                            }
+
+                                            total += hargaSatuan * jumlah;
+                                        }
+                                    });
+                                    hargaInput.value = total.toFixed(2);
+                                }
+
+                                checkboxes.forEach((checkbox, index) => {
+                                    checkbox.addEventListener('change', function () {
+                                        jumlahInputs[index].disabled = !this.checked;
+                                        if (!this.checked) {
+                                            jumlahInputs[index].value = 0;
+                                        } else if (jumlahInputs[index].value < 1) {
+                                            jumlahInputs[index].value = 1;
+                                        }
+                                        calculateTotal();
+                                    });
+
+                                    jumlahInputs[index].addEventListener('input', function () {
+                                        if (this.value < 1) this.value = 1;
+                                        calculateTotal();
+                                    });
+                                });
+
+                                // Initial calculation on page load (to pick old values if any)
+                                calculateTotal();
+                            });
+                        </script>
+
+                        <div class="mb-4">
+                            <label for="deskripsi" class="form-label">Deskripsi <span class="text-danger">*</span></label>
+                            <textarea id="deskripsi" name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="4" required>{{ old('deskripsi', $pemesanan->deskripsi) }}</textarea>
+                            @error('deskripsi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                            <select id="status" name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                <option value="pending" {{ (old('status', $pemesanan->status) == 'pending') ? 'selected' : '' }}>Pending</option>
+                                <option value="confirmed" {{ (old('status', $pemesanan->status) == 'confirmed') ? 'selected' : '' }}>Confirmed</option>
+                                <option value="completed" {{ (old('status', $pemesanan->status) == 'completed') ? 'selected' : '' }}>Completed</option>
+                                <option value="cancelled" {{ (old('status', $pemesanan->status) == 'cancelled') ? 'selected' : '' }}>Cancelled</option>
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3">
+                            <button type="reset" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="fas fa-undo me-2"></i>Reset
+                            </button>
+                            <button type="submit" class="btn btn-warning btn-lg px-5">
+                                <i class="fas fa-save me-2"></i>Update Pemesanan
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -180,77 +198,4 @@
         </div>
     </div>
 </div>
-
-<!-- Summary Card -->
-<div class="row justify-content-center mt-4">
-    <div class="col-lg-8">
-        <div class="card border-info shadow-sm">
-            <div class="card-header bg-info bg-opacity-10 border-info">
-                <h5 class="mb-0 text-info">
-                    <i class="fas fa-calculator me-2"></i>Ringkasan Pemesanan
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-6">
-                        <div class="p-3">
-                            <i class="fas fa-money-bill-wave fa-2x text-success mb-2"></i>
-                            <h4 id="totalHarga">Rp {{ number_format($pemesanan->harga, 0, ',', '.') }}</h4>
-                            <small class="text-muted">Total Harga</small>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="p-3">
-                            <i class="fas fa-calendar-day fa-2x text-primary mb-2"></i>
-                            <h4 id="tanggalPesan">{{ $pemesanan->tanggal_pemesanan->format('d/m/Y') }}</h4>
-                            <small class="text-muted">Tanggal Pemesanan</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@section('scripts')
-<script>
-$(document).ready(function() {
-    // Update summary when harga changes
-    $('#harga').on('input', function() {
-        updateSummary();
-    });
-
-    // Update summary when tanggal changes
-    $('#tanggal_pemesanan').on('change', function() {
-        updateSummary();
-    });
-
-    // Update summary
-    function updateSummary() {
-        const harga = parseFloat($('#harga').val()) || {{ $pemesanan->harga }};
-        const tanggal = $('#tanggal_pemesanan').val();
-
-        $('#totalHarga').text('Rp ' + harga.toLocaleString('id-ID'));
-        $('#tanggalPesan').text(tanggal ? new Date(tanggal).toLocaleDateString('id-ID') : '{{ $pemesanan->tanggal_pemesanan->format("d/m/Y") }}');
-    }
-
-    // Initialize summary on page load
-    updateSummary();
-
-    // Form validation
-    $('#editForm').on('submit', function(e) {
-        // Show loading
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            willOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    });
-});
-</script>
 @endsection

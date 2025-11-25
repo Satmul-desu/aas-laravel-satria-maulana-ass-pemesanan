@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Pelanggan')
+
 @section('content')
 <div class="container">
     <div class="row">
@@ -18,7 +20,7 @@
 
                     <div class="table-responsive">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class=table-dark >
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama</th>

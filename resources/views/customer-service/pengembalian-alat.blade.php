@@ -78,14 +78,14 @@
                                     <div class="note-item">
                                         <i class="fas fa-clock text-warning me-3"></i>
                                         <div>
-                                            <strong>Waktu Pengembalian:</strong> Harus tepat waktu sesuai jadwal. Keterlambatan akan dikenakan denda.
+                                            <strong>Waktu Pengembalian(return):</strong> Harus sesuai jadwal buka operator kami,jika tidak permintaan return anda tidak akan masuk ke pesan kami.
                                         </div>
                                     </div>
 
                                     <div class="note-item">
                                         <i class="fas fa-tools text-warning me-3"></i>
                                         <div>
-                                            <strong>Kondisi Alat:</strong> Alat harus dikembalikan dalam kondisi sama seperti saat dipinjam.
+                                            <strong>Kondisi Alat:</strong> Alat harus dikembalikan dalam kondisi sama seperti saat dipesan.
                                         </div>
                                     </div>
 
@@ -104,18 +104,10 @@
                                     </div>
                                 </div>
 
-                                <div class="alert alert-warning mt-4">
-                                    <h5><i class="fas fa-info-circle me-2"></i>Denda Keterlambatan:</h5>
-                                    <ul class="mb-0">
-                                        <li>1-3 hari: Rp 10.000 per hari per alat</li>
-                                        <li>4-7 hari: Rp 25.000 per hari per alat</li>
-                                        <li>>7 hari: Denda maksimal + potensi blacklist</li>
-                                    </ul>
-                                </div>
 
                                 <div class="alert alert-danger mt-3">
-                                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Kerusakan atau Kehilangan:</h5>
-                                    <p class="mb-0">Jika alat rusak atau hilang, akan dikenakan biaya penggantian sesuai nilai alat. Segera laporkan ke admin untuk penanganan.</p>
+                                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Kerusakan:</h5>
+                                    <p class="mb-0">Jika alat rusak, bisa untuk diperbaiki oleh pihak kami. Segera laporkan ke admin untuk penanganan.</p>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +132,7 @@
                                     <div class="card-body p-4 text-center">
                                         <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
                                         <h5>Perhatian!</h5>
-                                        <p class="mb-0">Keterlambatan pengembalian akan dikenakan sanksi</p>
+                                        <p class="mb-0">Tidak dapat menerima kerusakan saat alat di return</p>
                                     </div>
                                 </div>
                             </div>

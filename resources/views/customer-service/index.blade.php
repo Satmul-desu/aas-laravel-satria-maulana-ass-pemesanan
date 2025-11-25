@@ -23,8 +23,8 @@
                                     <div class="icon-wrapper mb-3">
                                         <i class="fas fa-shopping-cart fa-3x text-primary"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold">Cara Peminjaman</h5>
-                                    <p class="card-text text-muted">Panduan lengkap cara meminjam alat laboratorium</p>
+                                    <h5 class="card-title fw-bold">Cara Pemesanan</h5>
+                                    <p class="card-text text-muted">Panduan lengkap cara pemesanan alat laboratorium</p>
                                     <a href="{{ route('customer-service.cara-pemesanan') }}" class="btn btn-primary btn-lg rounded-pill w-100">
                                         <i class="fas fa-arrow-right me-2"></i>Lihat Solusi
                                     </a>
@@ -40,7 +40,7 @@
                                         <i class="fas fa-credit-card fa-3x text-success"></i>
                                     </div>
                                     <h5 class="card-title fw-bold">Masalah Pembayaran</h5>
-                                    <p class="card-text text-muted">Solusi untuk masalah pembayaran dan transaksi saat dikenakan denda</p>
+                                    <p class="card-text text-muted">Solusi untuk masalah pembayaran dan transaksi saat pemesanan</p>
                                     <a href="{{ route('customer-service.masalah-pembayaran') }}" class="btn btn-success btn-lg rounded-pill w-100">
                                         <i class="fas fa-arrow-right me-2"></i>Lihat Solusi
                                     </a>
@@ -56,7 +56,7 @@
                                         <i class="fas fa-undo fa-3x text-warning"></i>
                                     </div>
                                     <h5 class="card-title fw-bold">Pengembalian Alat</h5>
-                                    <p class="card-text text-muted">Panduan pengembalian alat dan prosedur</p>
+                                    <p class="card-text text-muted">Panduan pengembalian(return) alat dan prosedur</p>
                                     <a href="{{ route('customer-service.pengembalian-alat') }}" class="btn btn-warning btn-lg rounded-pill w-100">
                                         <i class="fas fa-arrow-right me-2"></i>Lihat Solusi
                                     </a>
@@ -80,6 +80,22 @@
                             </div>
                         </div>
 
+                        <!-- Ketentuan Pelanggan -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm hover-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="icon-wrapper mb-3">
+                                        <i class="fas fa-file-contract fa-3x text-primary"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Ketentuan Pelanggan</h5>
+                                    <p class="card-text text-muted">Informasi dan ketentuan untuk pelanggan</p>
+                                    <a href="{{ route('customer-service.ketentuan-pelanggan') }}" class="btn btn-primary btn-lg rounded-pill w-100">
+                                        <i class="fas fa-arrow-right me-2"></i>Lihat Ketentuan
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Lainnya -->
                         <div class="col-md-6 col-lg-4">
                             <div class="card h-100 border-0 shadow-sm hover-card">
@@ -98,39 +114,8 @@
                     </div>
 
                     <!-- Contact Info -->
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <div class="card border-0 bg-light rounded-4">
-                                <div class="card-body text-center p-4">
-                                    <h4 class="mb-3">
-                                        <i class="fas fa-phone-alt text-primary me-2"></i>
-                                        Butuh Bantuan Lebih Lanjut?
-                                    </h4>
-                                    <p class="mb-3">Jika masalah Anda tidak terselesaikan, hubungi tim support kami</p>
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-4">
-                                            <div class="contact-item">
-                                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
-                                                <p class="mb-0">Tsumulz.Lab@gmail.com</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="contact-item">
-                                                <i class="fas fa-phone fa-2x text-success mb-2"></i>
-                                                <p class="mb-0">+62 821-2993-9458</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="contact-item">
-                                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                                                <p class="mb-0">Senin - Jumat<br>07:00 - 20:00 WIB</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
+                    
                 </div>
             </div>
         </div>

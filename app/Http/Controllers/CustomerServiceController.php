@@ -35,4 +35,9 @@ class CustomerServiceController extends Controller
     {
         return view('customer-service.lainnya');
     }
+
+    public function ketentuanPelanggan()
+    {
+        return view('customer-service.ketentuan-pelanggan');
+    }
 }

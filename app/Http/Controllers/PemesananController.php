@@ -19,7 +19,7 @@ class PemesananController extends Controller
      */
     public function index(): View
     {
-        $pemesanans = Pemesanan::paginate(10);
+        $pemesanans = Pemesanan::with(['pelanggan', 'alat'])->paginate(10);
         return view('pemesanans.index', compact('pemesanans'));
     }
 
@@ -28,7 +28,8 @@ class PemesananController extends Controller
      */
     public function create(): View
     {
-        return view('pemesanans.create');
+        $pelanggans = \App\Models\Pelanggan::all();
+        return view('pemesanans.create', compact('pelanggans'));
     }
 
     /**
@@ -37,7 +38,46 @@ class PemesananController extends Controller
     public function store(StorePemesananRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        Pemesanan::create($validated);
+
+        // Create Pemesanan without total and harga first
+        $pemesanan = new \App\Models\Pemesanan($validated);
+        $pemesanan->harga = 0;
+        $pemesanan->total = 0;
+        $pemesanan->save();
+
+        // Assume alat_id and jumlah arrays are sent from request
+        $alatIds = $request->input('alat_id', []);
+        $jumlahs = $request->input('jumlah', []);
+
+        $totalHarga = 0;
+        $syncData = [];
+
+        foreach ($alatIds as $index => $alatId) {
+            $jumlah = isset($jumlahs[$index]) ? intval($jumlahs[$index]) : 0;
+            if ($jumlah > 0) {
+                $alat = \App\Models\Alat::find($alatId);
+                if ($alat) {
+                    $hargaSatuan = $alat->harga;
+                    $subtotal = $jumlah * $hargaSatuan;
+                    $totalHarga += $subtotal;
+
+                    $syncData[$alatId] = [
+                        'jumlah' => $jumlah,
+                        'harga_satuan' => $hargaSatuan,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+        }
+
+        // Save details
+        $pemesanan->alat()->sync($syncData);
+
+        // Update total and harga
+        $pemesanan->harga = $totalHarga;
+        $pemesanan->total = $totalHarga;
+        $pemesanan->save();
 
         return redirect()->route('pemesanans.index')->with('success', 'Pemesanan berhasil dibuat!');
     }
@@ -47,6 +87,7 @@ class PemesananController extends Controller
      */
     public function show(Pemesanan $pemesanan): View
     {
+        $pemesanan->load('alat');
         return view('pemesanans.show', compact('pemesanan'));
     }
 
@@ -55,7 +96,9 @@ class PemesananController extends Controller
      */
     public function edit(Pemesanan $pemesanan): View
     {
-        return view('pemesanans.edit', compact('pemesanan'));
+        $pelanggans = \App\Models\Pelanggan::all();
+        $pemesanan->load('alat');
+        return view('pemesanans.edit', compact('pemesanan', 'pelanggans'));
     }
 
     /**
@@ -64,7 +107,39 @@ class PemesananController extends Controller
     public function update(UpdatePemesananRequest $request, Pemesanan $pemesanan): RedirectResponse
     {
         $validated = $request->validated();
+
         $pemesanan->update($validated);
+
+        $alatIds = $request->input('alat_id', []);
+        $jumlahs = $request->input('jumlah', []);
+
+        $totalHarga = 0;
+        $syncData = [];
+
+        foreach ($alatIds as $index => $alatId) {
+            $jumlah = isset($jumlahs[$index]) ? intval($jumlahs[$index]) : 0;
+            if ($jumlah > 0) {
+                $alat = \App\Models\Alat::find($alatId);
+                if ($alat) {
+                    $hargaSatuan = $alat->harga;
+                    $subtotal = $jumlah * $hargaSatuan;
+                    $totalHarga += $subtotal;
+
+                    $syncData[$alatId] = [
+                        'jumlah' => $jumlah,
+                        'harga_satuan' => $hargaSatuan,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+        }
+
+        $pemesanan->alat()->sync($syncData);
+
+        $pemesanan->harga = $totalHarga;
+        $pemesanan->total = $totalHarga;
+        $pemesanan->save();
 
         return redirect()->route('pemesanans.index')->with('success', 'Pemesanan berhasil diperbarui!');
     }

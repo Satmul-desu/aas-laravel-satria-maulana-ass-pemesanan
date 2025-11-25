@@ -18,12 +18,16 @@ Route::get('pemesanans-export-excel', [PemesananController::class, 'exportExcel'
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/pengeluaran', [App\Http\Controllers\PengeluaranController::class, 'index'])->name('pengeluaran.index');
+    Route::post('/pengeluaran/pay/{id}', [App\Http\Controllers\PengeluaranController::class, 'pay'])->name('pengeluaran.pay');
     Route::get('/customer-service', [CustomerServiceController::class, 'index'])->name('customer-service.index');
     Route::get('/customer-service/cara-pemesanan', [CustomerServiceController::class, 'caraPemesanan'])->name('customer-service.cara-pemesanan');
     Route::get('/customer-service/masalah-pembayaran', [CustomerServiceController::class, 'masalahPembayaran'])->name('customer-service.masalah-pembayaran');
     Route::get('/customer-service/pengembalian-alat', [CustomerServiceController::class, 'pengembalianAlat'])->name('customer-service.pengembalian-alat');
     Route::get('/customer-service/masalah-teknis', [CustomerServiceController::class, 'masalahTeknis'])->name('customer-service.masalah-teknis');
     Route::get('/customer-service/lainnya', [CustomerServiceController::class, 'lainnya'])->name('customer-service.lainnya');
+    Route::get('/customer-service/ketentuan-pelanggan', [CustomerServiceController::class, 'ketentuanPelanggan'])->name('customer-service.ketentuan-pelanggan');
     Route::resource('kategori-alats', KategoriAlatController::class);
     Route::resource('alats', AlatController::class);
     Route::resource('pelanggans', PelangganController::class);
@@ -32,3 +36,5 @@ Route::middleware(['auth'])->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+

@@ -110,43 +110,54 @@
                         </div>
                     </div>
 
-                    <!-- Detail Pemesanan -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="card border-success shadow-sm">
-                                <div class="card-header bg-success bg-opacity-10 border-success">
-                                    <h5 class="mb-0 text-success">
-                                        <i class="fas fa-shopping-cart me-2"></i>Detail Pemesanan
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold text-muted">Harga</label>
-                                                <p class="mb-0 fs-4 text-success">Rp {{ number_format($pemesanan->harga, 0, ',', '.') }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold text-muted">Total</label>
-                                                <p class="mb-0 fs-4 text-primary fw-bold">Rp {{ number_format($pemesanan->total, 0, ',', '.') }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
+                                    <!-- Detail Pemesanan -->
+                                    <div class="row mb-4">
                                         <div class="col-12">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold text-muted">Deskripsi</label>
-                                                <p class="mb-0 fs-5">{{ $pemesanan->deskripsi }}</p>
+                                            <div class="card border-success shadow-sm">
+                                                <div class="card-header bg-success bg-opacity-10 border-success">
+                                                    <h5 class="mb-0 text-success">
+                                                        <i class="fas fa-shopping-cart me-2"></i>Detail Pemesanan
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <label class="form-label fw-bold text-muted">Daftar Alat dan Jumlah</label>
+                                                            @foreach($pemesanan->alat as $alat)
+                                                                <div class="mb-1">
+                                                                    <strong>{{ $alat->nama_alat }}</strong> - Jumlah: {{ $alat->pivot->jumlah }}
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold text-muted">Harga</label>
+                                                                <p class="mb-0 fs-4 text-success">Rp {{ number_format($pemesanan->harga, 0, ',', '.') }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold text-muted">Total</label>
+                                                                <p class="mb-0 fs-4 text-primary fw-bold">Rp {{ number_format($pemesanan->total, 0, ',', '.') }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold text-muted">Deskripsi</label>
+                                                                <p class="mb-0 fs-5">{{ $pemesanan->deskripsi }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Action Buttons -->
                     <div class="row">

@@ -22,15 +22,17 @@ class StorePemesananRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_pemesan' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:pemesanans,email',
-            'telepon' => 'required|string|max:20',
+            'pelanggan_id' => 'required|exists:pelanggans,id',
             'alamat' => 'required|string',
             'tanggal_pemesanan' => 'required|date|after_or_equal:today',
             'jenis_layanan' => 'required|string|max:255',
             'deskripsi' => 'required|string|min:10',
             'harga' => 'required|numeric|min:0',
             'status' => 'in:pending,confirmed,completed,cancelled',
+            'alat_id' => 'required|array',
+            'alat_id.*' => 'exists:alats,id',
+            'jumlah' => 'required|array',
+            'jumlah.*' => 'numeric|min:1',
         ];
     }
 

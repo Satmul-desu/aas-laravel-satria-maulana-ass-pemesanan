@@ -129,11 +129,34 @@
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user"></i> {{ Auth::check() ? Auth::user()->name : 'Guest' }}
-                                </button>
+<button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+    @if(Auth::check())
+        @php
+            $user = Auth::user();
+            $avatarPath = '';
+            if($user->hasRole('admin')){
+                $avatarPath = asset('assets/img/avatars/logho.png');
+            } elseif($user->hasRole('teacher') || $user->hasRole('student')) {
+                $avatarPath = asset('assets/img/avatars/1.png');
+            } else {
+                $avatarPath = asset('assets/img/avatars/1.png'); // default to student/teacher avatar
+            }
+        @endphp
+        <img src="{{ $avatarPath }}" alt="Profile Photo" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        {{ $user->name }}
+    @else
+        <i class="fas fa-user"></i> Guest
+    @endif
+</button>
                                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i> Ganti Akun</a></li>
+<li>
+    <form method="POST" action="{{ route('logout') }}" style="display: inline;" onsubmit="return confirm('Anda yakin ingin ganti akun?');">
+        @csrf
+        <button type="submit" class="dropdown-item">
+            <i class="fas fa-user-edit"></i> Ganti Akun
+        </button>
+    </form>
+</li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}" style="display: inline;">
@@ -147,6 +170,42 @@
                             </div>
                         </div>
                         <div class="btn-group me-2">
+                            @php
+                                use App\Models\Pengeluaran;
+                                $unpaidCount = Pengeluaran::where('status', 'unpaid')->count();
+                                $unpaids = Pengeluaran::where('status', 'unpaid')->orderBy('created_at', 'desc')->limit(5)->get();
+                            @endphp
+                            <div class="dropdown me-2">
+                                <button class="btn btn-sm btn-outline-light position-relative" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi Tagihan">
+                                    <i class="fas fa-bell"></i>
+                                    @if($unpaidCount > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ $unpaidCount }}
+                                        <span class="visually-hidden">unread notifications</span>
+                                    </span>
+                                    @endif
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notifDropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                                    <li><h6 class="dropdown-header">Tagihan Belum Dibayar</h6></li>
+                                    @forelse ($unpaids as $item)
+                                    <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ $item->type }}</strong><br/>
+                                            Rp {{ number_format($item->amount, 0, ',', '.') }}<br/>
+                                            <small>{{ $item->created_at->format('d/m/Y') }}</small>
+                                        </div>
+                                        <form method="POST" action="{{ route('pengeluaran.pay', $item->id) }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success">Bayar</button>
+                                        </form>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    @empty
+                                    <li class="dropdown-item text-center">Tidak ada tagihan belum dibayar</li>
+                                    @endforelse
+                                    <li class="text-center"><a href="{{ route('pengeluaran.index') }}" class="text-decoration-none">Lihat semua tagihan</a></li>
+                                </ul>
+                            </div>
                             <button type="button" class="btn btn-sm btn-outline-light" onclick="window.location.reload()">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
@@ -198,16 +257,59 @@
                 </div>
             </div>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var toastEl = document.getElementById('successToast');
-                var toast = new bootstrap.Toast(toastEl, {
-                    autohide: true,
-                    delay: 5000
-                });
-                toast.show();
-            });
-        </script>
     @endif
+
+    <!-- Footer -->
+       <div class="row mt-5">
+          <div class="col-12">
+            <div class="card border-0 bg-light rounded-4">
+              <div class="card-body text-center p-4">
+                
+                <p class="mb-3">Jika masalah Anda tidak terselesaikan, hubungi tim support kami</p>
+                <div class="row justify-content-center mb-4">
+                  <div class="col-md-4">
+                    <div class="contact-item">
+                      <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                      <p class="mb-0">Tsumulz.Lab@gmail.com</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="contact-item">
+                      <i class="fas fa-phone fa-2x text-success mb-2"></i>
+                      <p class="mb-0">+62 821-2993-9458</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="contact-item">
+                      <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                      <p class="mb-0">Senin - Jumat<br>07:00 - 20:00 WIB</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row justify-content-center">
+                  <div class="col-md-6">
+                    <div class="text-center" style="margin-left: 10px;">
+                      <i class="fa-solid fa-user-secret fa-2x text-primary mb-2 d-block mx-auto"></i>
+                      <p class="mb-0">komunitas: ~SOFTWARE LANDS CLUB~</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="text-center" style="margin-right: 10px;">
+                      <i class="fa-solid fa-laptop-code fa-2x text-warning mb-2 d-block mx-auto"></i>
+                      <p class="mb-0">copy rigth 2025 - Project Tsumulz (SLC)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </footer>
+
+    <style>
+        .footer span {
+            text-shadow: 0px 0px 2px rgba(0,0,0,0.8);
+        }
+    </style>
 </body>
 </html>

@@ -56,7 +56,7 @@
                                         <div class="step-number">4</div>
                                         <div class="step-content">
                                             <h5>Ajukan Peminjaman</h5>
-                                            <p>Klik tombol "Pinjam" dan isi form peminjaman dengan tanggal pinjam dan kembali yang diinginkan.</p>
+                                            <p>Klik tombol "Pinjam" dan isi form pemesanan.</p>
                                         </div>
                                     </div>
 
@@ -80,9 +80,9 @@
                                 <div class="alert alert-info mt-4">
                                     <h5><i class="fas fa-info-circle me-2"></i>Tips Penting:</h5>
                                     <ul class="mb-0">
-                                        <li>Pastikan tanggal peminjaman dan pengembalian sesuai dengan jadwal Anda</li>
-                                        <li>Periksa ketersediaan stok alat sebelum mengajukan peminjaman</li>
-                                        <li>Simpan bukti peminjaman untuk referensi</li>
+                                        <li>Pastikan pesanan Anda benar dan dokumetasikan </li>
+                                        <li>Periksa ketersediaan stok alat sebelum mengajukan pemesanan</li>
+                                        <li>Simpan bukti pemesanan untuk referensi</li>
                                         <li>Hubungi admin jika ada perubahan jadwal</li>
                                     </ul>
                                 </div>

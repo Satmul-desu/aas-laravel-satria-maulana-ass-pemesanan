@@ -112,6 +112,17 @@
                                     </span>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Harga:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge bg-secondary fs-6">
+                                        Rp {{ number_format($alat->harga, 2, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
                             @if($alat->deskripsi)
                             <hr>
                             <div class="row">
@@ -123,6 +134,7 @@
                             @endif
                         </div>
                     </div>
+
 
                     <!-- QR Code -->
                     <div class="card shadow-sm mt-3">

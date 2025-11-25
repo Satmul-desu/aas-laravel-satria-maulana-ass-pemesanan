@@ -41,65 +41,69 @@
                                     <th>Kondisi</th>
                                     <th>Status Fungsi</th>
                                     <th>Kualitas</th>
-                                    <th>Layak Pakai</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($alats as $index => $alat)
-                                <tr>
-                                    <td>{{ $alats->firstItem() + $index }}</td>
-                                    <td>{{ $alat->nama_alat }}</td>
-                                    <td>
-                                        <span class="badge bg-primary">{{ $alat->kategori->nama_kategori }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $alat->stok > 10 ? 'bg-success' : ($alat->stok > 0 ? 'bg-warning' : 'bg-danger') }}">
-                                            {{ $alat->stok }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $alat->kondisi == 'baru' ? 'bg-success' : 'bg-secondary' }}">
-                                            {{ ucfirst($alat->kondisi ?? 'N/A') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $alat->status_fungsi == 'berfungsi' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ ucfirst(str_replace('_', ' ', $alat->status_fungsi ?? 'N/A')) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $alat->kualitas == 'baik' ? 'bg-success' : 'bg-warning' }}">
-                                            {{ ucfirst($alat->kualitas ?? 'N/A') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $alat->layak == 'layak' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ ucfirst(str_replace('_', ' ', $alat->layak ?? 'N/A')) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('alats.show', $alat->id) }}" class="btn btn-sm btn-outline-info me-1" title="Detail">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('alats.edit', $alat->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteAlat({{ $alat->id }}, '{{ $alat->nama_alat }}')" title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="9" class="text-center py-4">
-                                        <i class="fas fa-tools fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">Belum ada data alat</p>
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                <th>Layak Pakai</th>
+                                <th>Harga</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($alats as $index => $alat)
+                            <tr>
+                                <td>{{ $alats->firstItem() + $index }}</td>
+                                <td>{{ $alat->nama_alat }}</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ $alat->kategori->nama_kategori }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ $alat->stok > 10 ? 'bg-success' : ($alat->stok > 0 ? 'bg-warning' : 'bg-danger') }}">
+                                        {{ $alat->stok }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ $alat->kondisi == 'baru' ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ ucfirst($alat->kondisi ?? 'N/A') }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ $alat->status_fungsi == 'berfungsi' ? 'bg-success' : 'bg-danger' }}">
+                                        {{ ucfirst(str_replace('_', ' ', $alat->status_fungsi ?? 'N/A')) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ $alat->kualitas == 'baik' ? 'bg-success' : 'bg-warning' }}">
+                                        {{ ucfirst($alat->kualitas ?? 'N/A') }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ $alat->layak == 'layak' ? 'bg-success' : 'bg-danger' }}">
+                                        {{ ucfirst(str_replace('_', ' ', $alat->layak ?? 'N/A')) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    Rp {{ number_format($alat->harga, 2, ',', '.') }}
+                                </td>
+                                <td>
+                                    <a href="{{ route('alats.show', $alat->id) }}" class="btn btn-sm btn-outline-info me-1" title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('alats.edit', $alat->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteAlat({{ $alat->id }}, '{{ $alat->nama_alat }}')" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="10" class="text-center py-4">
+                                    <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Belum ada data alat</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                     </div>
 
                     <!-- Pagination -->

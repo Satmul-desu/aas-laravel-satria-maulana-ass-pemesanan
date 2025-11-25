@@ -33,6 +33,10 @@ class UpdatePemesananRequest extends FormRequest
             'deskripsi' => 'sometimes|required|string|min:10',
             'harga' => 'sometimes|required|numeric|min:0',
             'status' => 'sometimes|in:pending,confirmed,completed,cancelled',
+            'alat_id' => 'required|array',
+            'alat_id.*' => 'exists:alats,id',
+            'jumlah' => 'required|array',
+            'jumlah.*' => 'numeric|min:1',
         ];
     }
 
