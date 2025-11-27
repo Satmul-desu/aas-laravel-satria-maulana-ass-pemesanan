@@ -27,6 +27,7 @@
                                 <th>Kode Pinjam</th>
                                 <th>Tanggal Pinjam</th>
                                 <th>Tanggal Kembali</th>
+                                <th>Pelanggan</th>
                                 <th>User</th>
                                 <th>Total</th>
                                 <th>Aksi</th>
@@ -38,6 +39,7 @@
                                 <td>{{ $peminjaman->kode_pinjam }}</td>
                                 <td>{{ $peminjaman->tanggal_pinjam->format('Y-m-d') }}</td>
                                 <td>{{ $peminjaman->tanggal_kembali->format('Y-m-d') }}</td>
+                                <td>{{ $peminjaman->pelanggan ? $peminjaman->pelanggan->nama . ' -- ' . $peminjaman->pelanggan->kode_pelanggan : 'N/A' }}</td>
                                 <td>{{ $peminjaman->user->name }}</td>
                                 <td>{{ number_format($peminjaman->total, 2) }}</td>
                                 <td>

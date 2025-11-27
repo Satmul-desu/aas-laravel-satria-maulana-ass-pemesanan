@@ -201,7 +201,7 @@
     <div class="col-12">
 <div class="card border-0 bg-gradient rounded-4" style="background: linear-gradient(135deg, #6a11cb, #764ba2); color: #e0d7f7;">
             <div class="card-body text-center p-4">
-                <p class="mb-3">Jika masalah Anda tidak terselesaikan, hubungi tim support kami</p>
+                <p class="mb-3">SELAMAT DATANG DI WEBSITE KAMI SEMOGA NYAMAN DENGAN WEB KAMI</p>
                 <div class="row justify-content-center">
                     <div class="col-md-4">
                         <div class="contact-item">
@@ -209,21 +209,7 @@
                             <p class="mb-0">Tsumulz.Lab@gmail.com</p>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="contact-item">
-                            <i class="fas fa-phone fa-2x text-light mb-2"></i>
-                            <p class="mb-0">+62 821-2993-9458</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="contact-item">
-                            <i class="fas fa-clock fa-2x text-light mb-2"></i>
-                            <p class="mb-0">Senin - Jumat<br>07:00 - 20:00 WIB</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-4">
+                   <div class="col-md-4">
                         <div class="contact-item">
                             <i class="fas fa-solid fa-user-secret fa-2x text-light mb-2"></i>
                             <p class="mb-0">Komunitas: SOFTWARE LANDS CLUB</p>
@@ -234,8 +220,8 @@
                             <i class="fas fa-solid fa-laptop-code fa-2x text-light mb-2"></i>
                             <p class="mb-0">coppyright 2025 by:Tsumulz (SLC)</p>
                         </div>
-                    </div>
                 </div>
+               
             </div>
         </div>
     </div>

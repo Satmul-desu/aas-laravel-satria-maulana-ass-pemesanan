@@ -14,6 +14,15 @@
             <input type="date" name="tanggal_kembali" id="tanggal_kembali" class="form-control" required>
         </div>
         <div class="mb-3">
+            <label for="pelanggan_id" class="form-label">Pelanggan</label>
+            <select name="pelanggan_id" id="pelanggan_id" class="form-select" required>
+                <option value="">Pilih Pelanggan</option>
+                @foreach ($pelanggans as $pelanggan)
+                    <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }} -- {{ $pelanggan->kode_pelanggan }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-3">
             <label for="user_id" class="form-label">Admin (User)</label>
             <select name="user_id" id="user_id" class="form-select" required>
                 <option value="">Pilih Admin</option>

@@ -14,7 +14,7 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        $peminjamans = Peminjaman::with(['user', 'alats'])->paginate(10);
+        $peminjamans = Peminjaman::with(['user', 'pelanggan', 'alats'])->paginate(10);
         $alats = Alat::all();
         $users = \App\Models\User::all();
         return view('peminjamans.index', compact('peminjamans', 'alats', 'users'));
@@ -27,7 +27,8 @@ class PeminjamanController extends Controller
     {
         $alats = Alat::all();
         $users = \App\Models\User::all();
-        return view('peminjamans.create', compact('alats', 'users'));
+        $pelanggans = \App\Models\Pelanggan::all();
+        return view('peminjamans.create', compact('alats', 'users', 'pelanggans'));
     }
 
     /**
@@ -38,6 +39,7 @@ class PeminjamanController extends Controller
         $request->validate([
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+            'pelanggan_id' => 'required|exists:pelanggans,id',
             'user_id' => 'required|exists:users,id',
             'alats' => 'required|array',
             'alats.*.id' => 'required|exists:alats,id',
@@ -57,6 +59,7 @@ class PeminjamanController extends Controller
             $peminjaman = Peminjaman::create([
                 'tanggal_pinjam' => $request->tanggal_pinjam,
                 'tanggal_kembali' => $request->tanggal_kembali,
+                'pelanggan_id' => $request->pelanggan_id,
                 'user_id' => $request->user_id,
                 'total' => $total,
                 'is_done' => false,
@@ -86,10 +89,11 @@ class PeminjamanController extends Controller
      */
     public function edit(Peminjaman $peminjaman)
     {
-        $peminjaman->load(['user', 'alats']);
+        $peminjaman->load(['user', 'pelanggan', 'alats']);
         $alats = Alat::all();
         $users = \App\Models\User::all();
-        return view('peminjamans.edit', compact('peminjaman', 'alats', 'users'));
+        $pelanggans = \App\Models\Pelanggan::all();
+        return view('peminjamans.edit', compact('peminjaman', 'alats', 'users', 'pelanggans'));
     }
 
     /**
@@ -100,6 +104,7 @@ class PeminjamanController extends Controller
         $request->validate([
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+            'pelanggan_id' => 'required|exists:pelanggans,id',
             'user_id' => 'required|exists:users,id',
             'alats' => 'required|array',
             'alats.*.id' => 'required|exists:alats,id',
@@ -119,6 +124,7 @@ class PeminjamanController extends Controller
             $peminjaman->update([
                 'tanggal_pinjam' => $request->tanggal_pinjam,
                 'tanggal_kembali' => $request->tanggal_kembali,
+                'pelanggan_id' => $request->pelanggan_id,
                 'user_id' => $request->user_id,
                 'total' => $total,
             ]);

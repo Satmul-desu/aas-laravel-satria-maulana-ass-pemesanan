@@ -8,11 +8,13 @@
         <div class="col-12">
             <!-- Header -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-gradient-primary text-white">
+                <div class="card-header bg-gradient-primary text-black">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="mb-0"><i class="fas fa-tools"></i> {{ $alat->nama_alat }}</h4>
                             <small>Kategori: {{ $alat->kategori->nama_kategori }}</small>
+                            <br>
+
                         </div>
                         <div>
                             <a href="{{ route('alats.index') }}" class="btn btn-light btn-sm">
@@ -31,6 +33,15 @@
                             <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informasi Alat</h5>
                         </div>
                         <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Kode Alat:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge bg-info fs-6">{{ $alat->kode_alat ?? 'N/A' }}</span>
+                                </div>
+                            </div>
+                            <hr>
                             <div class="row">
                                 <div class="col-6">
                                     <strong>Stok Total:</strong>

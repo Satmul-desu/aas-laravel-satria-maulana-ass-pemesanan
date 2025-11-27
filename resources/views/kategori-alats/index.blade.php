@@ -63,6 +63,8 @@
                             </tbody>
                         </table>
                     </div>
+
+                    @include('pagination', ['paginator' => $kategoriAlats])
                 </div>
             </div>
         </div>

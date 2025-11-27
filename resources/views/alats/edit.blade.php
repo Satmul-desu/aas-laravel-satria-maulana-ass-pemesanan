@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <div class="card-body p-5">
+                <div class="card-body p-5">n
                     <form action="{{ route('alats.update', $alat->id) }}" method="POST" novalidate>
                         @csrf
                         @method('PUT')
@@ -85,12 +85,14 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="kode_alat"
-                                                           value="{{ $alat->id }}" readonly>
+                                                    <input type="text" class="form-control" id="kode_alat" readonly
+                                                           value="{{ $alat->kode_alat ?? '' }}"
+                                                           placeholder="Kode otomatis">
                                                     <label for="kode_alat">
-                                                        <i class="fas fa-hashtag me-1"></i>ID Alat
+                                                        <i class="fas fa-hashtag me-1"></i>Kode Alat
                                                     </label>
                                                 </div>
+                                                <input type="hidden" name="kode_alat" value="{{ $alat->kode_alat ?? '' }}">
                                             </div>
                                         </div>
 
@@ -274,7 +276,7 @@
                                                 <p id="preview-deskripsi" class="text-muted mb-1">{{ $alat->deskripsi ?? 'Tidak ada deskripsi' }}</p>
                                                 <div class="d-flex gap-3">
                                                     <small class="text-muted">
-                                                        <i class="fas fa-hashtag me-1"></i>ID: {{ $alat->id }}
+                                                        <i class="fas fa-hashtag me-1"></i>Kode: <span id="preview-kode">Kode akan di-generate otomatis</span>
                                                     </small>
                                                     <small class="text-muted">
                                                         <i class="fas fa-boxes me-1"></i>Stok: <span id="preview-stok">{{ $alat->stok }}</span>
@@ -350,17 +352,38 @@
 @section('scripts')
 <script>
 $(document).ready(function() {
+    // Generate kode alat
+    function generateKodeAlat() {
+        const nama = $('#nama_alat').val().trim();
+        const kategoriId = $('#kategori_id').val();
+        if (nama && kategoriId) {
+            const words = nama.split(' ');
+            const kode = words.map(word => word.charAt(0).toUpperCase()).join('').substring(0, 3);
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `ALT-${kode}-${random}`;
+        }
+        return '';
+    }
+
     // Update preview when nama alat changes
     $('#nama_alat').on('input', function() {
         const nama = $(this).val().trim();
+        const kode = generateKodeAlat();
+
         $('#preview-nama').text(nama || 'Nama Alat');
+        $('#preview-kode').text(kode || 'Kode akan di-generate otomatis');
+        $('#kode_alat').val(kode);
     });
 
     // Update preview when kategori changes
     $('#kategori_id').on('change', function() {
         const selectedOption = $(this).find('option:selected');
         const kategoriNama = selectedOption.text().trim();
+        const kode = generateKodeAlat();
+
         $('#preview-kategori').html(kategoriNama ? `Kategori: <span class="text-primary">${kategoriNama}</span>` : 'Kategori: <span class="text-primary">Belum dipilih</span>');
+        $('#preview-kode').text(kode || 'Kode akan di-generate otomatis');
+        $('#kode_alat').val(kode);
     });
 
     // Update preview when stok changes

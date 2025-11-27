@@ -35,7 +35,7 @@ class DashboardController extends Controller
             ->toArray();
 
         $peminjamanCount = Peminjaman::count();
-        $recentPeminjamans = Peminjaman::with('user')->orderBy('created_at', 'desc')->limit(5)->get();
+        $recentPeminjamans = Peminjaman::with('user', 'pelanggan')->orderBy('created_at', 'desc')->limit(5)->get();
 
         return view('dashboard', compact(
             'totalAlats',

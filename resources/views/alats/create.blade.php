@@ -89,6 +89,7 @@
                                                         <i class="fas fa-hashtag me-1"></i>Kode Alat
                                                     </label>
                                                 </div>
+                                                <input type="hidden" name="kode_alat" id="kode_alat_hidden">
                                             </div>
                                         </div>
 
@@ -330,6 +331,7 @@ $(document).ready(function() {
         $('#preview-nama').text(nama || 'Nama Alat');
         $('#preview-kode').text(kode || 'Kode akan di-generate otomatis');
         $('#kode_alat').val(kode);
+        $('#kode_alat_hidden').val(kode);
     });
 
     // Update preview when kategori changes
@@ -341,6 +343,7 @@ $(document).ready(function() {
         $('#preview-kategori').html(kategoriNama ? `Kategori: <span class="text-primary">${kategoriNama}</span>` : 'Kategori: <span class="text-primary">Belum dipilih</span>');
         $('#preview-kode').text(kode || 'Kode akan di-generate otomatis');
         $('#kode_alat').val(kode);
+        $('#kode_alat_hidden').val(kode);
     });
 
     // Update preview when stok changes

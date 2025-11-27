@@ -37,15 +37,45 @@ class AlatController extends Controller
             'layak' => 'required|in:layak,tidak_layak',
         ]);
 
-        Alat::create($request->all());
+        // Generate kode alat
+        $nama = $request->nama_alat;
+        $words = explode(' ', $nama);
+        $kode = strtoupper(substr(implode('', array_map(function($word) { return substr($word, 0, 1); }, $words)), 0, 3));
+        $random = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
+        $kode_alat = "ALT-{$kode}-{$random}";
+
+        $data = $request->all();
+        $data['kode_alat'] = $kode_alat;
+
+        Alat::create($data);
 
         return redirect()->route('alats.index')->with('success', 'Alat berhasil ditambahkan!');
     }
 
     public function show($id)
     {
-        $alat = Alat::with('kategoriAlat')->findOrFail($id);
-        return view('alats.show', compact('alat'));
+        $alat = Alat::with('kategori')->findOrFail($id);
+
+        // Calculate available stock (total stock minus currently borrowed)
+        $currentBorrowed = $alat->peminjamanDetails()
+            ->whereHas('peminjaman', function ($query) {
+                $query->where('is_done', false);
+            })
+            ->sum('jumlah');
+
+        $availableStock = $alat->stok - $currentBorrowed;
+
+        // Total peminjaman history
+        $totalPeminjaman = $alat->peminjamanDetails()->sum('jumlah');
+
+        // Recent peminjaman
+        $recentPeminjaman = $alat->peminjamanDetails()
+            ->with('peminjaman.user')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('alats.show', compact('alat', 'availableStock', 'currentBorrowed', 'totalPeminjaman', 'recentPeminjaman'));
     }
 
     public function destroy($id)
@@ -70,9 +100,9 @@ class AlatController extends Controller
         return Excel::download(new AlatExport, 'data_alat_' . date('Y-m-d') . '.xlsx');
     }
 
-    public function edit($id)
+    public function edit($alat)
     {
-        $alat = Alat::findOrFail($id);
+        $alat = Alat::findOrFail($alat);
         $kategoris = \App\Models\KategoriAlat::all();
         return view('alats.edit', compact('alat', 'kategoris'));
     }
@@ -89,6 +119,7 @@ class AlatController extends Controller
             'status_fungsi' => 'required|in:berfungsi,tidak_berfungsi',
             'kualitas' => 'required|in:baik,buruk',
             'layak' => 'required|in:layak,tidak_layak',
+            'kode_alat' => 'nullable|string|max:255',
         ]);
 
         $alat = Alat::findOrFail($id);

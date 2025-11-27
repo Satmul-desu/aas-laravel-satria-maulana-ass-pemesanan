@@ -12,6 +12,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>ID:</strong> {{ $pelanggan->id }}</p>
+                            <p><strong>Kode Pelanggan:</strong> {{ $pelanggan->kode_pelanggan }}</p>
                             <p><strong>Nama:</strong> {{ $pelanggan->nama }}</p>
                             <p><strong>Email:</strong> {{ $pelanggan->email }}</p>
                             <p><strong>Telepon:</strong> {{ $pelanggan->telepon }}</p>

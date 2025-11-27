@@ -45,7 +45,7 @@
                                 @foreach ($pemesanans as $pemesanan)
                                 <tr>
                                     <td>{{ $pemesanan->kode_transaksi }}</td>
-                                    <td>{{ $pemesanan->pelanggan->nama ?? 'N/A' }}</td>
+                                    <td>{{ $pemesanan->pelanggan ? $pemesanan->pelanggan->nama . ' -- ' . $pemesanan->pelanggan->kode_pelanggan : 'N/A' }}</td>
                                     <td>
                                         @if($pemesanan->status == 'pending')
                                             <span class="badge bg-warning">Pending</span>

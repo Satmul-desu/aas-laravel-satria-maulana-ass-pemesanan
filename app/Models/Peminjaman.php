@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Peminjaman extends Model
 {
-    protected $fillable = ['kode_pinjam', 'tanggal_pinjam', 'tanggal_kembali', 'tanggal_dikembalikan', 'total', 'is_done', 'late_fee', 'user_id'];
+    protected $fillable = ['kode_pinjam', 'tanggal_pinjam', 'tanggal_kembali', 'tanggal_dikembalikan', 'total', 'is_done', 'late_fee', 'user_id', 'pelanggan_id'];
 
     protected $casts = [
         'tanggal_pinjam' => 'date',

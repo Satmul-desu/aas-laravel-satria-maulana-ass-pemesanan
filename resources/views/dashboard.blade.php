@@ -64,7 +64,7 @@
         <div class="col-md-6 d-flex flex-column align-items-center">
             <div class="card w-100 mb-3">
                 <div class="card-body text-center">
-                    <i class="fas fa-envelope fa-3x text-info mb-3"></i>
+                    <i class="fas fa-envelope fa-3x text-warning mb-3"></i>
                     <h4>{{ $pemesananBulanIni }}</h4>
                     <p class="text-muted mb-0">Pemesanan Bulan Ini</p>
                 </div>
@@ -89,7 +89,7 @@
                 <h5><i class="fas fa-chart-line"></i> Statistik Pemesanan Per Bulan</h5>
             </div>
             <div class="card-body">
-                <canvas id="pemesananChart" width="400" height="200"></canvas>
+                <canvas id="pemesananChart" width="400" height="100"></canvas>
             </div>
         </div>
     </div>
@@ -158,6 +158,7 @@
                             <tr>
                                 <th>Kode Pinjam</th>
                                 <th>User</th>
+                                <th>Pelanggan</th>
                                 <th>Tanggal Pinjam</th>
                                 <th>Tanggal Kembali</th>
                                 <th>Total</th>
@@ -169,6 +170,7 @@
                             <tr>
                                 <td>{{ $peminjaman->kode_pinjam ?? 'N/A' }}</td>
                                 <td>{{ $peminjaman->user->name ?? 'N/A' }}</td>
+                                <td>{{ $peminjaman->pelanggan->nama ?? 'N/A' }}</td>
                                 <td>{{ optional($peminjaman->tanggal_pinjam)->format('Y-m-d') }}</td>
                                 <td>{{ optional($peminjaman->tanggal_kembali)->format('Y-m-d') }}</td>
                                 <td>Rp {{ number_format($peminjaman->total ?? 0, 0, ',', '.') }}</td>
@@ -178,7 +180,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center">Belum ada data peminjaman selesai</td>
+                                <td colspan="7" class="text-center">Belum ada data peminjaman selesai</td>
                             </tr>
                             @endforelse
                         </tbody>

@@ -31,6 +31,7 @@
                             <thead class=table-dark >
                                 <tr>
                                     <th>ID</th>
+                                    <th>Kode Pelanggan</th>
                                     <th>Nama</th>
                                     <th>Email</th>
                                     <th>Telepon</th>
@@ -42,6 +43,7 @@
                                 @forelse($pelanggans as $pelanggan)
                                     <tr>
                                         <td>{{ $pelanggan->id }}</td>
+                                        <td>{{ $pelanggan->kode_pelanggan }}</td>
                                         <td>{{ $pelanggan->nama }}</td>
                                         <td>{{ $pelanggan->email }}</td>
                                         <td>{{ $pelanggan->telepon }}</td>
@@ -58,7 +60,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center">Tidak ada data pelanggan.</td>
+                                        <td colspan="7" class="text-center">Tidak ada data pelanggan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
