@@ -6,10 +6,18 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Daftar Pelanggan</h4>
-                    <a href="{{ route('pelanggans.create') }}" class="btn btn-primary float-right">Tambah Pelanggan</a>
+<div class="card">
+                 <div class="card-header bg-gradient-info text-dark d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-users"></i> Daftar Pelanggan</h5>
+                    <div>
+                        <a href="{{ route('pelanggans.export.pdf') }}" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </a>
+                        <a href="{{ route('pelanggans.export.excel') }}" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </a>
+                        <a href="{{ route('pelanggans.create') }}" class="btn btn-primary">Tambah Pelanggan</a>
+                    </div>
                 </div>
                 <div class="card-body">
                     @if(session('success'))

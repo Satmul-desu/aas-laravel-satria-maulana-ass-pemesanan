@@ -3,22 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alat;
-use App\Models\Pemesanan;
+use App\Models\Peminjaman;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-class PemesananController extends Controller
+class PeminjamanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pemesanans = Pemesanan::with(['user', 'details.alat'])->paginate(10);
-        $alats = \App\Models\Alat::all();
+        $peminjamans = Peminjaman::with(['user', 'alats'])->paginate(10);
+        $alats = Alat::all();
         $users = \App\Models\User::all();
-        return view('pemesanans.index', compact('pemesanans', 'alats', 'users'));
+        return view('peminjamans.index', compact('peminjamans', 'alats', 'users'));
     }
 
     /**
@@ -26,18 +25,19 @@ class PemesananController extends Controller
      */
     public function create()
     {
-        $alats = \App\Models\Alat::all();
+        $alats = Alat::all();
         $users = \App\Models\User::all();
-        return view('pemesanans.create', compact('alats', 'users'));
+        return view('peminjamans.create', compact('alats', 'users'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $request->validate([
-            'tanggal_pesan' => 'required|date',
+            'tanggal_pinjam' => 'required|date',
+            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
             'user_id' => 'required|exists:users,id',
             'alats' => 'required|array',
             'alats.*.id' => 'required|exists:alats,id',
@@ -45,125 +45,122 @@ class PemesananController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            // Calculate total cost
             $total = 0;
             foreach ($request->alats as $alatData) {
-                $alat = Alat::find($alatData['id']);
+                $alat = Alat::findOrFail($alatData['id']);
                 $total += $alat->harga * $alatData['jumlah'];
             }
 
-            $pesanan = Pemesanan::create([
-                'tanggal_pesan' => $request->tanggal_pesan,
+            // Apply 70% discount on total (total becomes 30% of original price)
+            $total = $total * 0.3;
+
+            $peminjaman = Peminjaman::create([
+                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_kembali' => $request->tanggal_kembali,
                 'user_id' => $request->user_id,
                 'total' => $total,
+                'is_done' => false,
             ]);
 
             foreach ($request->alats as $alatData) {
-                $alat = Alat::find($alatData['id']);
-                if ($alat->stok < $alatData['jumlah']) {
-                    throw new \Exception("Stok alat {$alat->nama_alat} tidak mencukupi");
-                }
-
-                $pesanan->details()->create([
-                    'pemesanan_id' => $pesanan->id,
-                    'alat_id' => $alatData['id'],
-                    'jumlah' => $alatData['jumlah'],
-                ]);
-
-                $alat->decrement('stok', $alatData['jumlah']);
+                $peminjaman->alats()->attach($alatData['id'], ['jumlah' => $alatData['jumlah']]);
             }
         });
 
-        return response()->json(['message' => 'Pemesanan created successfully'], 201);
+        return redirect()->route('peminjamans.index')->with('success', 'Peminjaman created successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Pemesanan $pemesanan)
+    public function show(Peminjaman $peminjaman)
     {
-        $pemesanan->load(['user', 'details.alat']);
-        $alats = \App\Models\Alat::all();
+        $peminjaman->load(['user', 'alats']);
+        $alats = Alat::all();
         $users = \App\Models\User::all();
-        return view('pemesanans.show', compact('pemesanan', 'alats', 'users'));
+        return view('peminjamans.show', compact('peminjaman', 'alats', 'users'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Pemesanan $pemesanan)
+    public function edit(Peminjaman $peminjaman)
     {
-        $pemesanan->load(['user', 'details.alat']);
-        $alats = \App\Models\Alat::all();
+        $peminjaman->load(['user', 'alats']);
+        $alats = Alat::all();
         $users = \App\Models\User::all();
-        return view('pemesanans.edit', compact('pemesanan', 'alats', 'users'));
+        return view('peminjamans.edit', compact('peminjaman', 'alats', 'users'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Pemesanan $pemesanan): JsonResponse
+    public function update(Request $request, Peminjaman $peminjaman)
     {
         $request->validate([
-            'tanggal_pesan' => 'required|date',
+            'tanggal_pinjam' => 'required|date',
+            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
             'user_id' => 'required|exists:users,id',
             'alats' => 'required|array',
             'alats.*.id' => 'required|exists:alats,id',
             'alats.*.jumlah' => 'required|integer|min:1',
         ]);
 
-        DB::transaction(function () use ($request, $pemesanan) {
-            // Restore stock
-            foreach ($pemesanan->details as $detail) {
-                $detail->alat->increment('stok', $detail->jumlah);
-            }
-
-            // Calculate total cost
+        DB::transaction(function () use ($request, $peminjaman) {
             $total = 0;
             foreach ($request->alats as $alatData) {
-                $alat = Alat::find($alatData['id']);
+                $alat = Alat::findOrFail($alatData['id']);
                 $total += $alat->harga * $alatData['jumlah'];
             }
 
-            $pemesanan->update([
-                'tanggal_pesan' => $request->tanggal_pesan,
+            // Apply 70% discount on total (total becomes 30% of original price)
+            $total = $total * 0.3;
+
+            $peminjaman->update([
+                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_kembali' => $request->tanggal_kembali,
                 'user_id' => $request->user_id,
                 'total' => $total,
             ]);
 
-            $pemesanan->details()->delete();
+            $peminjaman->alats()->detach();
 
             foreach ($request->alats as $alatData) {
-                $alat = Alat::find($alatData['id']);
-                if ($alat->stok < $alatData['jumlah']) {
-                    throw new \Exception("Stok alat {$alat->nama_alat} tidak mencukupi");
-                }
-
-                $pemesanan->details()->create([
-                    'pemesanan_id' => $pemesanan->id,
-                    'alat_id' => $alatData['id'],
-                    'jumlah' => $alatData['jumlah'],
-                ]);
-
-                $alat->decrement('stok', $alatData['jumlah']);
+                $peminjaman->alats()->attach($alatData['id'], ['jumlah' => $alatData['jumlah']]);
             }
         });
 
-        return response()->json(['message' => 'Pemesanan updated successfully']);
+        return redirect()->route('peminjamans.index')->with('success', 'Peminjaman updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pemesanan $pemesanan): JsonResponse
+    public function destroy(Peminjaman $peminjaman)
     {
-        DB::transaction(function () use ($pemesanan) {
-            foreach ($pemesanan->details as $detail) {
-                $detail->alat->increment('stok', $detail->jumlah);
-            }
-            $pemesanan->delete();
+        DB::transaction(function () use ($peminjaman) {
+            $peminjaman->alats()->detach();
+            $peminjaman->delete();
         });
 
-        return response()->json(['message' => 'Pemesanan deleted successfully']);
+        return redirect()->route('peminjamans.index')->with('success', 'Peminjaman deleted successfully');
+    }
+
+    /**
+     * Export peminjaman data to Excel.
+     */
+    public function exportExcel()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\PeminjamanExport, 'peminjaman.xlsx');
+    }
+
+    /**
+     * Export peminjaman data to PDF.
+     */
+    public function exportPDF()
+    {
+        $peminjamans = Peminjaman::all();
+        $pdf = \PDF::loadView('peminjamans.export_pdf', compact('peminjamans'));
+        return $pdf->download('peminjaman.pdf');
     }
 }

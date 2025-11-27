@@ -18,6 +18,7 @@ class Alat extends Model
         'kualitas',
         'layak',
         'deskripsi',
+        'harga',
     ];
 
     public function kategori()

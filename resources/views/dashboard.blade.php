@@ -3,64 +3,84 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="row">
-    <!-- Stats Cards -->
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="fas fa-tools fa-3x text-primary mb-3"></i>
-                <h4>{{ $totalAlats }}</h4>
-                <p class="text-muted mb-0">Total Stok Alat</p>
+<div class="container">
+    <!-- Row 1: total stok alat, kategori, total pemesanan -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-tools fa-3x text-primary mb-3"></i>
+                    <h4>{{ $totalAlats }}</h4>
+                    <p class="text-muted mb-0">Total Stok Alat</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-tags fa-3x text-success mb-3"></i>
+                    <h4>{{ $totalKategori }}</h4>
+                    <p class="text-muted mb-0">Kategori Alat</p>
+                </div>
+            </div>
+        </div>
+          <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
+                    <h4>Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</h4>
+                    <p class="text-muted mb-0">Total Pemasukan</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="fas fa-tags fa-3x text-success mb-3"></i>
-                <h4>{{ $totalKategori }}</h4>
-                <p class="text-muted mb-0">Kategori Alat</p>
+       
+    </div>
+
+    <!-- Row 2: total peminjaman, total pemasukan -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-file-invoice-dollar fa-3x text-info mb-3"></i>
+                    <h4>{{ $peminjamanCount }}</h4>
+                    <p class="text-muted mb-0">Total Peminjaman</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="fas fa-hand-holding fa-3x text-warning mb-3"></i>
-                <h4>{{ $totalPemesanan }}</h4>
-                <p class="text-muted mb-0">Total Pemesanan</p>
+         <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-shopping-cart fa-3x text-warning mb-3"></i>
+                    <h4>{{ $totalPemesanan }}</h4>
+                    <p class="text-muted mb-0">Total Pemesanan</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="fas fa-calendar-month fa-3x text-info mb-3"></i>
-                <h4>{{ $pemesananBulanIni }}</h4>
-                <p class="text-muted mb-0">Pemesanan Bulan Ini</p>
+      
+
+    <!-- Row 3: total pemesanan bulan ini, total peminjaman bulan ini (vertical columns) -->
+    <div class="row mb-4">
+        <div class="col-md-6 d-flex flex-column align-items-center">
+            <div class="card w-100 mb-3">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-3x text-info mb-3"></i>
+                    <h4>{{ $pemesananBulanIni }}</h4>
+                    <p class="text-muted mb-0">Pemesanan Bulan Ini</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="fas fa-clock fa-3x text-danger mb-3"></i>
-                <h4>Rp {{ number_format($totalKerugian, 0, ',', '.') }}</h4>
-                <p class="text-muted mb-0">Total Kerugian (Denda)</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
-                <h4>Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</h4>
-                <p class="text-muted mb-0">Total Pemasukan</p>
+        <div class="col-md-6 d-flex flex-column align-items-center">
+            <div class="card w-100 mb-3">
+                <div class="card-body text-center">
+                    <i class="fas fa-briefcase fa-3x text-info mb-3"></i> 
+                    <h4>{{ $peminjamanBulanIni }}</h4>
+                    <p class="text-muted mb-0">Peminjaman Bulan Ini</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 <div class="row">
     <!-- Chart -->
     <div class="col-md-12">
@@ -75,12 +95,12 @@
     </div>
 </div>
 
-<!-- Recent Pemesanan -->
+<!-- History Pemesanan -->
 <div class="row mt-4">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-clock"></i> Pemesanan Terbaru</h5>
+                <h5><i class="fas fa-history"></i> History Pemesanan</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -89,27 +109,76 @@
                             <tr>
                                 <th>Kode Pesan</th>
                                 <th>User</th>
-                                <th>Tanggal Pesan</th>
-                                <th>Status</th>
+                                <th>Nama Alat</th>
+                                <th>Total Harga</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse(\App\Models\Pemesanan::with('user')->latest()->take(5)->get() as $pemesanan)
+                            @forelse(\App\Models\Pemesanan::with('pelanggan', 'alat')->latest()->take(5)->get() as $pemesanan)
                             <tr>
-                                <td>{{ $pemesanan->kode_pesan }}</td>
-                                <td>{{ $pemesanan->user->name }}</td>
-                                <td>{{ $pemesanan->tanggal_pesan ? $pemesanan->tanggal_pesan->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $pemesanan->kode_transaksi }}</td>
+                                <td>{{ $pemesanan->pelanggan->nama ?? 'N/A' }}</td>
                                 <td>
-                                    @if($pemesanan->is_done)
-                                        <span class="badge bg-success">Done</span>
+                                    @if($pemesanan->alat->isEmpty())
+                                        <span class="text-muted">Tidak ada alat</span>
                                     @else
-                                        <span class="badge bg-warning">No</span>
+                                        {{ $pemesanan->alat->pluck('nama_alat')->join(', ') }}
                                     @endif
+                                </td>
+                                <td>Rp {{ number_format($pemesanan->total, 0, ',', '.') }}</td>
+                                <td>
+                                    <a href="{{ route('pemesanans.show', $pemesanan) }}" class="btn btn-primary btn-sm">Detail</a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center">Belum ada data pemesanan</td>
+                                <td colspan="5" class="text-center">Belum ada data pemesanan selesai</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History Peminjaman -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history"></i> History Peminjaman</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Kode Pinjam</th>
+                                <th>User</th>
+                                <th>Tanggal Pinjam</th>
+                                <th>Tanggal Kembali</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentPeminjamans as $peminjaman)
+                            <tr>
+                                <td>{{ $peminjaman->kode_pinjam ?? 'N/A' }}</td>
+                                <td>{{ $peminjaman->user->name ?? 'N/A' }}</td>
+                                <td>{{ optional($peminjaman->tanggal_pinjam)->format('Y-m-d') }}</td>
+                                <td>{{ optional($peminjaman->tanggal_kembali)->format('Y-m-d') }}</td>
+                                <td>Rp {{ number_format($peminjaman->total ?? 0, 0, ',', '.') }}</td>
+                                <td>
+                                    <a href="{{ route('peminjamans.show', $peminjaman) }}" class="btn btn-primary btn-sm">Detail</a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Belum ada data peminjaman selesai</td>
                             </tr>
                             @endforelse
                         </tbody>

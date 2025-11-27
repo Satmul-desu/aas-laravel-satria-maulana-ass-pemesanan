@@ -114,7 +114,7 @@
                     </div>
 
                     <!-- Contact Info -->
-                    
+                
                     
                 </div>
             </div>
@@ -148,14 +148,6 @@
 
 .bg-gradient-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.contact-item {
-    padding: 20px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    margin: 10px 0;
 }
 
 .btn {

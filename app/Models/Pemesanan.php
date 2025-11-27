@@ -12,6 +12,7 @@ class Pemesanan extends Model
         'kode_transaksi',
         'pelanggan_id',
         'alamat',
+        'tanggal_pemesanan',
         'jenis_layanan',
         'deskripsi',
         'harga',

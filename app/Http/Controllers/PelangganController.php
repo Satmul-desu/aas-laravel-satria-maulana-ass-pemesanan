@@ -4,88 +4,75 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PelangganExport;
 
 class PelangganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $pelanggans = Pelanggan::paginate(10);
         return view('pelanggans.index', compact('pelanggans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('pelanggans.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:pelanggans',
-            'telepon' => 'required|string|max:20',
-            'alamat' => 'required|string',
+            'email' => 'required|email|unique:pelanggans,email',
+            'telepon' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string',
         ]);
 
         Pelanggan::create($request->all());
 
-        return redirect()->route('pelanggans.index')->with('success', 'Pelanggan berhasil ditambahkan');
+        return redirect()->route('pelanggans.index')->with('success', 'Pelanggan berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
         $pelanggan = Pelanggan::findOrFail($id);
         return view('pelanggans.show', compact('pelanggan'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Show Pelanggan data as PDF view (instead of download)
+    public function exportPdf()
+    {
+        $pelanggans = Pelanggan::all();
+        $pdf = Pdf::loadView('pelanggans.export_pdf', compact('pelanggans'));
+        return $pdf->stream('data_pelanggan_' . date('Y-m-d') . '.pdf');
+    }
+
+    // Export Pelanggan data to Excel
+    public function exportExcel()
+    {
+        return Excel::download(new PelangganExport, 'data_pelanggan_' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function edit($id)
     {
         $pelanggan = Pelanggan::findOrFail($id);
         return view('pelanggans.edit', compact('pelanggan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $pelanggan = Pelanggan::findOrFail($id);
-
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:pelanggans,email,' . $id,
-            'telepon' => 'required|string|max:20',
-            'alamat' => 'required|string',
+            'telepon' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string',
         ]);
 
+        $pelanggan = Pelanggan::findOrFail($id);
         $pelanggan->update($request->all());
 
-        return redirect()->route('pelanggans.index')->with('success', 'Pelanggan berhasil diperbarui');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $pelanggan = Pelanggan::findOrFail($id);
-        $pelanggan->delete();
-
-        return redirect()->route('pelanggans.index')->with('success', 'Pelanggan berhasil dihapus');
+        return redirect()->route('pelanggans.index')->with('success', 'Pelanggan berhasil diperbarui!');
     }
 }

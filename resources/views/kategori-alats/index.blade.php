@@ -6,12 +6,20 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-gradient-info text-white d-flex justify-content-between align-items-center">
+<div class="card shadow-sm">
+                <div class="card-header bg-gradient-info text-dark d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-tags"></i> Daftar Kategori Alat</h5>
-                    <a href="{{ route('kategori-alats.create') }}" class="btn btn-light btn-sm">
-                        <i class="fas fa-plus"></i> Tambah Kategori
-                    </a>
+                    <div>
+                        <a href="{{ route('kategori-alats.export.pdf') }}" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </a>
+                        <a href="{{ route('kategori-alats.export.excel') }}" class="btn btn-light btn-sm me-3">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </a>
+                        <a href="{{ route('kategori-alats.create') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus"></i> Tambah Kategori
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

@@ -61,13 +61,19 @@
             transition: all 0.3s ease;
         }
         .sidebar .nav-link:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
+            /* Updated hover color to a modern aesthetic gradient background */ 
+            color: #ffffff;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
             border-radius: 10px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         .sidebar .nav-link.active {
             background: rgba(255, 255, 255, 0.2);
             color: white;
+        }
+        /* Added margin-bottom for moderate vertical spacing between sidebar items */
+        .sidebar .nav-item {
+            margin-bottom: 12px;
         }
     </style>
 
@@ -82,7 +88,7 @@
         <div class="row">
             <!-- Sidebar -->
             <nav class="col-md-2 d-none d-md-block sidebar p-3">
-                <div class="text-center mb-4">
+                <div class="text-center mb-3">
                     <h5 class="text-white"><i class="fas fa-flask"></i> Lab Tools System</h5>
                 </div>
                 <ul class="nav flex-column">
@@ -108,7 +114,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('pemesanans.*') ? 'active' : '' }}" href="{{ route('pemesanans.index') }}">
-                            <i class="fas fa-hand-holding"></i> Pemesanan
+                            <i class="fas fa-solid fa-cart-flatbed"></i> Pemesanan
+                        </a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('peminjamans.*') ? 'active' : '' }}" href="{{ route('peminjamans.index') }}">
+                            <i class="fas fa-hand-holding"></i> Peminjaman
                         </a>
                     </li>
                     <li class="nav-item">
@@ -129,39 +140,16 @@
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <div class="dropdown">
-<button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-    @if(Auth::check())
-        @php
-            $user = Auth::user();
-            $avatarPath = '';
-            if($user->hasRole('admin')){
-                $avatarPath = asset('assets/img/avatars/logho.png');
-            } elseif($user->hasRole('teacher') || $user->hasRole('student')) {
-                $avatarPath = asset('assets/img/avatars/1.png');
-            } else {
-                $avatarPath = asset('assets/img/avatars/1.png'); // default to student/teacher avatar
-            }
-        @endphp
-        <img src="{{ $avatarPath }}" alt="Profile Photo" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
-        {{ $user->name }}
-    @else
-        <i class="fas fa-user"></i> Guest
-    @endif
-</button>
+                                <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> {{ Auth::check() ? Auth::user()->name : 'Guest' }}
+                                </button>
                                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
-<li>
-    <form method="POST" action="{{ route('logout') }}" style="display: inline;" onsubmit="return confirm('Anda yakin ingin ganti akun?');">
-        @csrf
-        <button type="submit" class="dropdown-item">
-            <i class="fas fa-user-edit"></i> Ganti Akun
-        </button>
-    </form>
-</li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i> Ganti Akun</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                        <form method="POST" action="{{ route('logout') }}" style="display: inline;" id="logout-form">
                                             @csrf
-                                            <button type="submit" class="dropdown-item">
+                                            <button type="button" class="dropdown-item" onclick="confirmLogout()">
                                                 <i class="fas fa-sign-out-alt"></i> Logout
                                             </button>
                                         </form>
@@ -170,42 +158,6 @@
                             </div>
                         </div>
                         <div class="btn-group me-2">
-                            @php
-                                use App\Models\Pengeluaran;
-                                $unpaidCount = Pengeluaran::where('status', 'unpaid')->count();
-                                $unpaids = Pengeluaran::where('status', 'unpaid')->orderBy('created_at', 'desc')->limit(5)->get();
-                            @endphp
-                            <div class="dropdown me-2">
-                                <button class="btn btn-sm btn-outline-light position-relative" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi Tagihan">
-                                    <i class="fas fa-bell"></i>
-                                    @if($unpaidCount > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {{ $unpaidCount }}
-                                        <span class="visually-hidden">unread notifications</span>
-                                    </span>
-                                    @endif
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notifDropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
-                                    <li><h6 class="dropdown-header">Tagihan Belum Dibayar</h6></li>
-                                    @forelse ($unpaids as $item)
-                                    <li class="dropdown-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>{{ $item->type }}</strong><br/>
-                                            Rp {{ number_format($item->amount, 0, ',', '.') }}<br/>
-                                            <small>{{ $item->created_at->format('d/m/Y') }}</small>
-                                        </div>
-                                        <form method="POST" action="{{ route('pengeluaran.pay', $item->id) }}">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-success">Bayar</button>
-                                        </form>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    @empty
-                                    <li class="dropdown-item text-center">Tidak ada tagihan belum dibayar</li>
-                                    @endforelse
-                                    <li class="text-center"><a href="{{ route('pengeluaran.index') }}" class="text-decoration-none">Lihat semua tagihan</a></li>
-                                </ul>
-                            </div>
                             <button type="button" class="btn btn-sm btn-outline-light" onclick="window.location.reload()">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
@@ -244,72 +196,146 @@
     </div>
 
     @yield('scripts')
-
-    <!-- Toast Notifications -->
-    @if(session('success'))
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- Footer -->
-       <div class="row mt-5">
-          <div class="col-12">
-            <div class="card border-0 bg-light rounded-4">
-              <div class="card-body text-center p-4">
-                
+{{-- footer --}}
+<div class="row mt-5">
+    <div class="col-12">
+<div class="card border-0 bg-gradient rounded-4" style="background: linear-gradient(135deg, #6a11cb, #764ba2); color: #e0d7f7;">
+            <div class="card-body text-center p-4">
                 <p class="mb-3">Jika masalah Anda tidak terselesaikan, hubungi tim support kami</p>
-                <div class="row justify-content-center mb-4">
-                  <div class="col-md-4">
-                    <div class="contact-item">
-                      <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
-                      <p class="mb-0">Tsumulz.Lab@gmail.com</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope fa-2x text-light mb-2"></i>
+                            <p class="mb-0">Tsumulz.Lab@gmail.com</p>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="contact-item">
-                      <i class="fas fa-phone fa-2x text-success mb-2"></i>
-                      <p class="mb-0">+62 821-2993-9458</p>
+                    <div class="col-md-4">
+                        <div class="contact-item">
+                            <i class="fas fa-phone fa-2x text-light mb-2"></i>
+                            <p class="mb-0">+62 821-2993-9458</p>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="contact-item">
-                      <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                      <p class="mb-0">Senin - Jumat<br>07:00 - 20:00 WIB</p>
+                    <div class="col-md-4">
+                        <div class="contact-item">
+                            <i class="fas fa-clock fa-2x text-light mb-2"></i>
+                            <p class="mb-0">Senin - Jumat<br>07:00 - 20:00 WIB</p>
+                        </div>
                     </div>
-                  </div>
                 </div>
                 <div class="row justify-content-center">
-                  <div class="col-md-6">
-                    <div class="text-center" style="margin-left: 10px;">
-                      <i class="fa-solid fa-user-secret fa-2x text-primary mb-2 d-block mx-auto"></i>
-                      <p class="mb-0">komunitas: ~SOFTWARE LANDS CLUB~</p>
+                    <div class="col-md-4">
+                        <div class="contact-item">
+                            <i class="fas fa-solid fa-user-secret fa-2x text-light mb-2"></i>
+                            <p class="mb-0">Komunitas: SOFTWARE LANDS CLUB</p>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="text-center" style="margin-right: 10px;">
-                      <i class="fa-solid fa-laptop-code fa-2x text-warning mb-2 d-block mx-auto"></i>
-                      <p class="mb-0">copy rigth 2025 - Project Tsumulz (SLC)</p>
+                    <div class="col-md-4">
+                        <div class="contact-item">
+                            <i class="fas fa-solid fa-laptop-code fa-2x text-light mb-2"></i>
+                            <p class="mb-0">coppyright 2025 by:Tsumulz (SLC)</p>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-    </footer>
+    </div>
+</div>
 
-    <style>
-        .footer span {
-            text-shadow: 0px 0px 2px rgba(0,0,0,0.8);
+<!-- Toast Notifications -->
+@if(session('success'))
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastEl = document.getElementById('successToast');
+            var toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 5000
+            });
+            toast.show();
+        });
+    </script>
+@endif
+
+<script>
+function confirmLogout() {
+    const firstMessages = [
+        "Apakah Anda yakin ingin log out? Kadang, perpisahan kecil seperti ini pun meninggalkan sepi yang tak terjelaskan.",
+        "Apakah Anda yakin ingin log out? Setelah ini, hanya sunyi yang tetap tinggal.",
+        "Apakah Anda yakin ingin log out? Karena setiap kepergian, sekecil apa pun, selalu menyisakan hampa.",
+        "Apakah Anda yakin ingin log out? Aku tak bisa menahanmu… tapi rasa kehilangan tetap ada.",
+        "Apakah Anda yakin ingin log out? Barangkali ini hanya tombol, tapi rasanya seperti mengucap selamat tinggal."
+    ];
+
+    const secondMessages = [
+        "Oh… ternyata kamu yakin ya. Kalau begitu… selamat tinggal. Semoga kenangan kita tidak ikut hilang bersamamu.",
+        "Oh… ternyata kamu yakin ya. Baiklah… pergilah. Aku hanya berharap sunyi setelah ini tidak lebih dingin dari kepergianmu.",
+        "Oh… ternyata kamu yakin ya. Kalau begitu… sampai di sini saja. Kadang yang pergi lebih tenang daripada yang ditinggalkan.",
+        "Oh… ternyata kamu yakin ya. Selamat tinggal… meski bagiku, setiap perpisahan selalu terdengar seperti hati yang retak pelan-pelan.",
+        "Oh… ternyata kamu yakin ya. Baiklah… semoga langkahmu ringan. Karena bagiku, melepaskanmu tidak pernah terasa ringan."
+    ];
+
+    const cancelMessages = [
+        "Hore, terima kasih banyak! Aku senang kamu tetap tinggal di sini.",
+        "Horeeee! Terima kasih banyak! Ternyata kamu belum tega ninggalin aku.",
+        "Hore, terima kasih banyak! Dunia langsung cerah lagi karena kamu nggak jadi pergi.",
+        "Hore, terima kasih banyak! Aku kira kamu mau pergi… ternyata masih mau bareng aku.",
+        "Hore, terima kasih banyak! Kamu bikin aku bahagia banget dengan keputusan ini."
+    ];
+
+    const firstRandomMessage = firstMessages[Math.floor(Math.random() * firstMessages.length)];
+
+    Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: firstRandomMessage,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Saya Yakin',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const secondRandomMessage = secondMessages[Math.floor(Math.random() * secondMessages.length)];
+
+            Swal.fire({
+                title: 'Pesan Terakhir',
+                text: secondRandomMessage,
+                icon: 'info',
+                showCancelButton: false,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Byee',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                backdrop: 'static'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            const cancelRandomMessage = cancelMessages[Math.floor(Math.random() * cancelMessages.length)];
+
+            Swal.fire({
+                title: 'Yay! Kamu Tetap Di Sini',
+                text: cancelRandomMessage,
+                icon: 'success',
+                confirmButtonColor: '#28a745',
+                confirmButtonText: 'OK',
+                timer: 4000,
+                showConfirmButton: true
+            });
         }
-    </style>
+    });
+}
+</script>
 </body>
 </html>

@@ -5,46 +5,28 @@ namespace App\Exports;
 use App\Models\Pemesanan;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 
-class PemesananExport implements FromCollection, WithHeadings, WithMapping
+class PemesananExport implements FromCollection, WithHeadings
 {
+    /**
+     * Return all pemesanan data for export.
+     */
     public function collection()
     {
-        return Pemesanan::all();
+        // Select fields to export, customize as needed
+        return Pemesanan::select('kode_transaksi', 'tanggal_pemesanan', 'pelanggan_id', 'total')->get();
     }
 
+    /**
+     * Set headings for the Excel sheet.
+     */
     public function headings(): array
     {
         return [
             'Kode Transaksi',
-            'Nama Pemesan',
-            'Email',
-            'Telepon',
-            'Alamat',
             'Tanggal Pemesanan',
-            'Jenis Layanan',
-            'Deskripsi',
-            'Harga',
+            'Pelanggan ID',
             'Total',
-            'Status'
-        ];
-    }
-
-    public function map($pemesanan): array
-    {
-        return [
-            $pemesanan->kode_transaksi ?? 'N/A',
-            $pemesanan->nama_pemesan,
-            $pemesanan->email,
-            $pemesanan->telepon,
-            $pemesanan->alamat,
-            $pemesanan->tanggal_pemesanan->format('d/m/Y'),
-            $pemesanan->jenis_layanan,
-            $pemesanan->deskripsi,
-            $pemesanan->harga,
-            $pemesanan->total,
-            ucfirst($pemesanan->status)
         ];
     }
 }

@@ -173,3 +173,143 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    let alatIndex = 0;
+    const alatContainer = $('#alatContainer');
+    const emptyState = $('#emptyState');
+    const totalAlatEl = $('#totalAlat');
+    const totalJumlahEl = $('#totalJumlah');
+    const hargaEl = $('#harga');
+
+    // Get available alats from server
+    let availableAlats = @json(\App\Models\Alat::all());
+
+    function updateTotals() {
+        let totalAlat = 0;
+        let totalJumlah = 0;
+        let totalHarga = 0;
+
+        $('.alat-item').each(function() {
+            const alatId = $(this).find('.alat-select').val();
+            const jumlah = parseInt($(this).find('.jumlah-input').val()) || 0;
+
+            if (alatId && jumlah > 0) {
+                totalAlat++;
+                totalJumlah += jumlah;
+
+                const alat = availableAlats.find(a => a.id == alatId);
+                if (alat) {
+                    totalHarga += alat.harga * jumlah;
+                }
+            }
+        });
+
+        totalAlatEl.text(totalAlat);
+        totalJumlahEl.text(totalJumlah);
+        hargaEl.val(totalHarga.toFixed(2));
+    }
+
+    function addAlatItem() {
+        const itemHtml = `
+            <div class="alat-item border rounded p-3 mb-3 bg-light" data-index="${alatIndex}">
+                <div class="row align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label">Pilih Alat</label>
+                        <select class="form-select alat-select" name="alat_id[${alatIndex}]" required>
+                            <option value="">Pilih Alat</option>
+                            ${availableAlats.map(alat => `
+                                <option value="${alat.id}" data-harga="${alat.harga}" data-stok="${alat.stok}">
+                                    ${alat.nama_alat} (Stok: ${alat.stok}) - Rp ${alat.harga.toLocaleString()}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Jumlah</label>
+                        <input type="number" class="form-control jumlah-input" name="jumlah[${alatIndex}]" min="1" value="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-alat-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <small class="text-muted harga-satuan-info"></small>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        alatContainer.append(itemHtml);
+        emptyState.hide();
+        alatIndex++;
+        updateTotals();
+    }
+
+    // Add alat button click
+    $('#addAlatBtn').on('click', function() {
+        addAlatItem();
+    });
+
+    // Remove alat button click
+    $(document).on('click', '.remove-alat-btn', function() {
+        $(this).closest('.alat-item').remove();
+        if ($('.alat-item').length === 0) {
+            emptyState.show();
+        }
+        updateTotals();
+    });
+
+    // Alat selection change
+    $(document).on('change', '.alat-select', function() {
+        const selectedOption = $(this).find('option:selected');
+        const harga = selectedOption.data('harga');
+        const stok = selectedOption.data('stok');
+        const infoEl = $(this).closest('.alat-item').find('.harga-satuan-info');
+
+        if (harga) {
+            infoEl.text(`Harga satuan: Rp ${harga.toLocaleString()} | Stok tersedia: ${stok}`);
+        } else {
+            infoEl.text('');
+        }
+
+        updateTotals();
+    });
+
+    // Jumlah input change
+    $(document).on('input', '.jumlah-input', function() {
+        updateTotals();
+    });
+
+    // Form validation
+    $('form').on('submit', function(e) {
+        const alatItems = $('.alat-item');
+        if (alatItems.length === 0) {
+            e.preventDefault();
+            alert('Harap tambahkan setidaknya satu alat ke dalam pemesanan.');
+            return false;
+        }
+
+        let hasValidAlat = false;
+        alatItems.each(function() {
+            const alatId = $(this).find('.alat-select').val();
+            const jumlah = parseInt($(this).find('.jumlah-input').val()) || 0;
+            if (alatId && jumlah > 0) {
+                hasValidAlat = true;
+            }
+        });
+
+        if (!hasValidAlat) {
+            e.preventDefault();
+            alert('Harap pilih alat dan jumlah yang valid.');
+            return false;
+        }
+    });
+});
+</script>
+@endsection

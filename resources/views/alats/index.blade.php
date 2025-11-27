@@ -7,11 +7,19 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-gradient-primary text-dark d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-tools"></i> Kelola Alat Laboratorium</h5>
-                    <a href="{{ route('alats.create') }}" class="btn btn-light btn-sm">
-                        <i class="fas fa-plus"></i> Tambah Alat
-                    </a>
+                    <div>
+                        <a href="{{ route('alats.export.pdf') }}" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </a>
+                        <a href="{{ route('alats.export.excel') }}" class="btn btn-light btn-sm me-3">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </a>
+                        <a href="{{ route('alats.create') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus"></i> Tambah Alat
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <!-- Search and Filter -->

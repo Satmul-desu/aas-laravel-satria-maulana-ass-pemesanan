@@ -7,6 +7,7 @@ use App\Models\KategoriAlat;
 use App\Models\Pemesanan;
 use App\Models\Pengeluaran;
 use App\Models\Saldo;
+use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -18,9 +19,11 @@ class DashboardController extends Controller
         $totalPemesanan = Pemesanan::count();
         $pemesananBulanIni = Pemesanan::whereMonth('created_at', now()->month)->count();
 
-        $totalKerugian = Pengeluaran::where('status', 'paid')->sum('amount');
+        $peminjamanBulanIni = Peminjaman::whereMonth('created_at', now()->month)->count();
 
-        $totalPemasukan = Pemesanan::sum('total');
+        $totalPemasukanPemesanan = Pemesanan::sum('total');
+        $totalPemasukanPeminjaman = Peminjaman::sum('total');
+        $totalPemasukan = $totalPemasukanPemesanan + $totalPemasukanPeminjaman;
 
         $saldo = Saldo::latest()->first();
         $currentSaldo = $saldo ? $saldo->amount : 0;
@@ -31,6 +34,20 @@ class DashboardController extends Controller
             ->pluck('jumlah', 'bulan')
             ->toArray();
 
-        return view('dashboard', compact('totalAlats', 'totalKategori', 'totalPemesanan', 'pemesananBulanIni', 'totalKerugian', 'pemesananPerBulan', 'totalPemasukan', 'currentSaldo'));
+        $peminjamanCount = Peminjaman::count();
+        $recentPeminjamans = Peminjaman::with('user')->orderBy('created_at', 'desc')->limit(5)->get();
+
+        return view('dashboard', compact(
+            'totalAlats',
+            'totalKategori',
+            'totalPemesanan',
+            'peminjamanCount',
+            'pemesananBulanIni',
+            'peminjamanBulanIni',
+            'pemesananPerBulan',
+            'totalPemasukan',
+            'currentSaldo',
+            'recentPeminjamans'
+        ));
     }
 }
